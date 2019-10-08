@@ -1,0 +1,177 @@
+openapi: 3.0.2
+info:
+  title: spaCy NER
+  version: '0'
+  description: Named entity recognition using spaCy NLP.
+  contact:
+    name: Neel Kamath
+    email: neelkamath@icloud.com
+    url: https://github.com/neelkamath/spacy-ner-server
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://spacy-ner-server.herokuapp.com
+    description: This is a temporary development server which may be offline or serving a different API in the future.
+paths:
+  /:
+    post:
+      tags: [NER]
+      description: Recognizes named entities in text.
+      operationId: namedEntityRecognition
+      requestBody:
+        required: true
+        description: Text to process
+        content:
+          application/json:
+            example:
+              sections:
+                - Net income was $9.4 million compared to the prior year of $2.7 million. Google is a big company.
+                - Revenue exceeded twelve billion dollars, with a loss of $1b.
+            schema:
+              type: object
+              properties:
+                sections:
+                  description:
+                    Although you could pass the full text as a single array item, it would be faster to split large text
+                    into multiple items. Each item needn't be semantically related.
+                  type: array
+                  items:
+                    type: string
+              required: [sections]
+      responses:
+        200:
+          description: Processed text
+          content:
+            application/json:
+              example:
+                data:
+                  - entities:
+                      - entity: $9.4 million
+                        offset:
+                          end: 27
+                          start: 15
+                        type: MONEY
+                      - entity: the prior year
+                        offset:
+                          end: 54
+                          start: 40
+                        type: DATE
+                      - entity: $2.7 million
+                        offset:
+                          end: 70
+                          start: 58
+                        type: MONEY
+                    sentence: Net income was $9.4 million compared to the prior year of $2.7 million.
+                  - entities:
+                      - entity: Google
+                        offset:
+                          end: 78
+                          start: 72
+                        type: ORG
+                    sentence: Google is a big company.
+                  - entities:
+                      - entity: twelve billion dollars
+                        offset:
+                          end: 39
+                          start: 17
+                        type: MONEY
+                      - entity: 1b
+                        offset:
+                          end: 59
+                          start: 57
+                        type: MONEY
+                    sentence: Revenue exceeded twelve billion dollars, with a loss of $1b.
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        entities:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              entity:
+                                type: string
+                              offset:
+                                type: object
+                                properties:
+                                  start:
+                                    type: integer
+                                  end:
+                                    type: integer
+                                required: [start, end]
+                              type:
+                                description: |
+                                  `PERSON`: People, including fictional.
+
+                                  `NORP`: Nationalities or religious or political groups.
+
+                                  `FAC`: Buildings, airports, highways, bridges, etc.
+
+                                  `ORG`: Companies, agencies, institutions, etc.
+
+                                  `GPE`: Countries, cities, states.
+
+                                  `LOC`: Non-GPE locations, mountain ranges, bodies of water.
+
+                                  `PRODUCT`: Objects, vehicles, foods, etc. (Not services.)
+
+                                  `EVENT`: Named hurricanes, battles, wars, sports events, etc.
+
+                                  `WORK_OF_ART`: Titles of books, songs, etc.
+
+                                  `LAW`: Named documents made into laws.
+
+                                  `LANGUAGE`: Any named language.
+
+                                  `DATE`: Absolute or relative dates or periods.
+
+                                  `TIME`: Times smaller than a day.
+
+                                  `PERCENT`: Percentage, including ”%“.
+
+                                  `MONEY`: Monetary values, including unit.
+
+                                  `QUANTITY`: Measurements, as of weight or distance.
+
+                                  `ORDINAL`: “first”, “second”, etc.
+
+                                  `CARDINAL`: Numerals that do not fall under another type.
+                                type: string
+                                enum:
+                                  - PERSON
+                                  - NORP
+                                  - FAC
+                                  - ORG
+                                  - GPE
+                                  - LOC
+                                  - PRODUCT
+                                  - EVENT
+                                  - WORK_OF_ART
+                                  - LAW
+                                  - LANGUAGE
+                                  - DATE
+                                  - TIME
+                                  - PERCENT
+                                  - MONEY
+                                  - QUANTITY
+                                  - ORDINAL
+                                  - CARDINAL
+                            required: [entity, offset, type]
+                        sentence:
+                          type: string
+                      required: [entities, sentence]
+                required: [data]
+  /health_check:
+    get:
+      tags: [status]
+      description: Check if all systems are operational
+      operationId: healthCheck
+      responses:
+        204:
+          description: All systems are operational

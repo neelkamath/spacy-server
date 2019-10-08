@@ -1,0 +1,92 @@
+stages: [test, build, push, deploy]
+
+test-server:
+  stage: test
+  image: python:3
+  script:
+    - pip install -r requirements.txt
+    - python test.py
+
+test-compatibility:
+  stage: test
+  image: python:3
+  script:
+    - pip install -r requirements.txt
+    - python -m spacy validate
+
+test-spec:
+  stage: test
+  image: node
+  script:
+    - npm i -g @stoplight/spectral
+    - spectral lint docs/openapi.yaml
+
+build-image:
+  stage: build
+  image: docker:dind
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - export version=$(grep version docs/openapi.yaml -m 1)
+    - 'echo v${version#*: } > version.txt'
+    - docker build -t $CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:$(cat version.txt) .
+    - docker push $CI_REGISTRY_IMAGE
+    - docker push $CI_REGISTRY_IMAGE:$(cat version.txt)
+  artifacts:
+    paths: [version.txt]
+  # TODO: Uncomment: only: [master]
+
+build-docs:
+  stage: build
+  image: node
+  script:
+    - npm i -g redoc-cli
+    - redoc-cli bundle docs/openapi.yaml --title 'spaCy NER Server'
+  artifacts:
+    paths: [redoc-static.html]
+  # TODO: Uncomment: only: [master]
+
+docker-hub:
+  stage: push
+  image: docker:dind
+  script:
+    - echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USER --password-stdin https://index.docker.io/v1/
+    - docker pull $CI_REGISTRY_IMAGE
+    - docker pull $CI_REGISTRY_IMAGE:$(cat version.txt)
+    - docker tag $CI_REGISTRY_IMAGE $DOCKER_HUB_USER/spacy-ner-server
+    - docker tag $CI_REGISTRY_IMAGE:$(cat version.txt) $DOCKER_HUB_USER/spacy-ner-server:$(cat version.txt)
+    - docker push $DOCKER_HUB_USER/spacy-ner-server
+    - docker push $DOCKER_HUB_USER/spacy-ner-server:$(cat version.txt)
+  # TODO: Uncomment: only: [master]
+
+heroku-push:
+  stage: push
+  image: docker:dind
+  script:
+    - echo $HEROKU_AUTH_TOKEN | docker login --username=_ --password-stdin registry.heroku.com
+    - docker pull $CI_REGISTRY_IMAGE
+    - docker tag $CI_REGISTRY_IMAGE registry.heroku.com/$HEROKU_APP/web
+    - docker push registry.heroku.com/$HEROKU_APP/web
+    - echo $(docker inspect registry.heroku.com/$HEROKU_APP/web --format='{{.Id}}') > image_id.txt
+  artifacts:
+    paths: [image_id.txt]
+  # TODO: Uncomment: only: [master]
+
+heroku-release:
+  stage: deploy
+  image: appropriate/curl
+  script: >
+    curl -nX PATCH https://api.heroku.com/apps/"$HEROKU_APP"/formation \
+      -d '{"updates":[{"type":"web","docker_image":"'"$(cat image_id.txt)"'"}]}' \
+      -H 'Content-Type: application/json' \
+      -H 'Accept: application/vnd.heroku+json; version=3.docker-releases' \
+      -H "Authorization: Bearer $HEROKU_AUTH_TOKEN"
+  # TODO: Uncomment: only: [master]
+
+pages:
+  stage: deploy
+  script:
+    - mkdir public
+    - cp redoc-static.html public/index.html
+  artifacts:
+    paths: [public]
+  # TODO: Uncomment: only: [master]
