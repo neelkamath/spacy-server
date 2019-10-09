@@ -1,0 +1,178 @@
+openapi: 3.0.2
+info:
+  title: spaCy
+  version: '0'
+  description:
+    Named entity recognition using spaCy NLP.
+
+    You can view the documentation for previous versions
+    [here](https://github.com/neelkamath/spacy-server/releases).
+  contact:
+    name: Neel Kamath
+    email: neelkamath@icloud.com
+    url: https://github.com/neelkamath/spacy-server
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://spacy-server.herokuapp.com
+    description: This is a temporary development server which may be offline or serving a different API in the future.
+paths:
+  /:
+    post:
+      tags: [nlp]
+      description: Named entity recognizer
+      operationId: ner
+      requestBody:
+        required: true
+        description: Text to process
+        content:
+          application/json:
+            example:
+              sections:
+                - Net income was $9.4 million compared to the prior year of $2.7 million. Google is a big company.
+                - Revenue exceeded twelve billion dollars, with a loss of $1b.
+            schema:
+              type: object
+              properties:
+                sections:
+                  description:
+                    Although you could pass the full text as a single array item, it would be faster to split large text
+                    into multiple items. Each item needn't be semantically related.
+                  type: array
+                  items:
+                    type: string
+              required: [sections]
+      responses:
+        200:
+          description: Processed text
+          content:
+            application/json:
+              example:
+                data:
+                    - entities:
+                      - end: 1
+                        end_char: 6
+                        label: ORG
+                        lemma: Google
+                        start: 0
+                        start_char: 0
+                        text: Google
+                        text_with_ws: 'Google '
+                      - end: 6
+                        end_char: 33
+                        label: PERSON
+                        lemma: Sundar Pichai
+                        start: 4
+                        start_char: 20
+                        text: Sundar Pichai
+                        text_with_ws: Sundar Pichai
+                      sentence: Google is headed by Sundar Pichai.
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        entities:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              text:
+                                type: string
+                                description: A unicode representation of the entity text.
+                              label:
+                                description: |
+                                  The entity’s label.
+
+                                  `PERSON`: People, including fictional.
+
+                                  `NORP`: Nationalities or religious or political groups.
+
+                                  `FAC`: Buildings, airports, highways, bridges, etc.
+
+                                  `ORG`: Companies, agencies, institutions, etc.
+
+                                  `GPE`: Countries, cities, states.
+
+                                  `LOC`: Non-GPE locations, mountain ranges, bodies of water.
+
+                                  `PRODUCT`: Objects, vehicles, foods, etc. (Not services.)
+
+                                  `EVENT`: Named hurricanes, battles, wars, sports events, etc.
+
+                                  `WORK_OF_ART`: Titles of books, songs, etc.
+
+                                  `LAW`: Named documents made into laws.
+
+                                  `LANGUAGE`: Any named language.
+
+                                  `DATE`: Absolute or relative dates or periods.
+
+                                  `TIME`: Times smaller than a day.
+
+                                  `PERCENT`: Percentage, including ”%“.
+
+                                  `MONEY`: Monetary values, including unit.
+
+                                  `QUANTITY`: Measurements, as of weight or distance.
+
+                                  `ORDINAL`: “first”, “second”, etc.
+
+                                  `CARDINAL`: Numerals that do not fall under another type.
+                                type: string
+                                enum:
+                                  - PERSON
+                                  - NORP
+                                  - FAC
+                                  - ORG
+                                  - GPE
+                                  - LOC
+                                  - PRODUCT
+                                  - EVENT
+                                  - WORK_OF_ART
+                                  - LAW
+                                  - LANGUAGE
+                                  - DATE
+                                  - TIME
+                                  - PERCENT
+                                  - MONEY
+                                  - QUANTITY
+                                  - ORDINAL
+                                  - CARDINAL
+                              start_char:
+                                type: integer
+                                description: The character offset for the start of the entity.
+                              end_char:
+                                type: integer
+                                description: The character offset for the end of the entity.
+                              lemma:
+                                type: string
+                                description: The entity’s lemma.
+                              start:
+                                type: integer
+                                description: The token offset for the start of the entity.
+                              end:
+                                type: integer
+                                description: The token offset for the end of the entity.
+                              text_with_ws:
+                                type: string
+                                description:
+                                  The text content of the entity with a trailing whitespace character if the last token
+                                  has one.
+                            required: [start, end, text, text_with_ws, start_char, end_char, lemma, label]
+                        sentence:
+                          type: string
+                      required: [entities, sentence]
+                required: [data]
+  /health_check:
+    get:
+      tags: [status]
+      description: Check if all systems are operational
+      operationId: healthCheck
+      responses:
+        204:
+          description: All systems are operational
