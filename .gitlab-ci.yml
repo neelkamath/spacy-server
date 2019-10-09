@@ -37,8 +37,10 @@ build-image:
   image: docker:dind
   script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - export version=$(grep version docs/openapi.yaml -m 1)
-    - 'echo v${version#*: } > version.txt'
+    - version=$(grep version docs/openapi.yaml -m 1)
+    - 'version=${version#*: }'
+    - version=$(echo $version | cut -d "'" -f 2)
+    - echo v$version > version.txt
     - docker build -t $CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:$(cat version.txt) .
     - docker push $CI_REGISTRY_IMAGE
     - docker push $CI_REGISTRY_IMAGE:$(cat version.txt)
