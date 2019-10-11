@@ -91,6 +91,12 @@ def build_token(token):
     }
 
 
+@app.route('/tokenize', methods=['POST'])
+def tokenize():
+    doc = nlp(flask.request.get_json()['text'])
+    return {'tokens': [token.text for token in doc]}
+
+
 @app.route('/health_check')
 def check_health():
     return flask.Response(status=204)

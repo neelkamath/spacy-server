@@ -748,6 +748,48 @@ paths:
                               - char_offset
                       required: [sentence, tags]
                 required: [data]
+  /tokenize:
+    post:
+      tags: [nlp]
+      description: Tokenization
+      operationId: tokenize
+      requestBody:
+        required: true
+        description: Text to tokenize
+        content:
+          application/json:
+            example:
+              text: Apple is looking at buying U.K. startup for $1 billion
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+              required: [text]
+      responses:
+        200:
+          description: Tokenized text
+          content:
+            application/json:
+              example:
+                tokens:
+                  - Apple
+                  - is
+                  - looking
+                  - at
+                  - buying
+                  - U.K.
+                  - startup
+                  - for
+                  - '$'
+                  - '1'
+                  - billion
+              schema:
+                type: object
+                properties:
+                  tokens:
+                    type: string
+                required: [tokens]
   /health_check:
     get:
       tags: [status]
