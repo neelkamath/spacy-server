@@ -36,10 +36,10 @@
           "shape": "Xxxxx",
           "suffix": "ple",
           "tag": "NNP",
-          "text": "Apple",
-          "text_with_ws": "Apple ",
+          "text": "Apple", 
+          "text_with_ws": "Apple ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 6,
           "dep": "aux",
@@ -74,10 +74,10 @@
           "shape": "xx",
           "suffix": "is",
           "tag": "VBZ",
-          "text": "is",
-          "text_with_ws": "is ",
+          "text": "is", 
+          "text_with_ws": "is ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 9,
           "dep": "ROOT",
@@ -112,10 +112,10 @@
           "shape": "xxxx",
           "suffix": "ing",
           "tag": "VBG",
-          "text": "looking",
-          "text_with_ws": "looking ",
+          "text": "looking", 
+          "text_with_ws": "looking ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 17,
           "dep": "prep",
@@ -150,10 +150,10 @@
           "shape": "xx",
           "suffix": "at",
           "tag": "IN",
-          "text": "at",
-          "text_with_ws": "at ",
+          "text": "at", 
+          "text_with_ws": "at ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 20,
           "dep": "pcomp",
@@ -188,10 +188,10 @@
           "shape": "xxxx",
           "suffix": "ing",
           "tag": "VBG",
-          "text": "buying",
-          "text_with_ws": "buying ",
+          "text": "buying", 
+          "text_with_ws": "buying ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 27,
           "dep": "compound",
@@ -226,10 +226,10 @@
           "shape": "X.X.",
           "suffix": ".K.",
           "tag": "NNP",
-          "text": "U.K.",
-          "text_with_ws": "U.K. ",
+          "text": "U.K.", 
+          "text_with_ws": "U.K. ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 32,
           "dep": "dobj",
@@ -264,10 +264,10 @@
           "shape": "xxxx",
           "suffix": "tup",
           "tag": "NN",
-          "text": "startup",
-          "text_with_ws": "startup ",
+          "text": "startup", 
+          "text_with_ws": "startup ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 40,
           "dep": "prep",
@@ -302,10 +302,10 @@
           "shape": "xxx",
           "suffix": "for",
           "tag": "IN",
-          "text": "for",
-          "text_with_ws": "for ",
+          "text": "for", 
+          "text_with_ws": "for ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 44,
           "dep": "quantmod",
@@ -340,10 +340,10 @@
           "shape": "$",
           "suffix": "$",
           "tag": "$",
-          "text": "$",
-          "text_with_ws": "$",
+          "text": "$", 
+          "text_with_ws": "$", 
           "whitespace": ""
-        },
+        }, 
         {
           "char_offset": 45,
           "dep": "compound",
@@ -378,10 +378,10 @@
           "shape": "d",
           "suffix": "1",
           "tag": "CD",
-          "text": "1",
-          "text_with_ws": "1 ",
+          "text": "1", 
+          "text_with_ws": "1 ", 
           "whitespace": " "
-        },
+        }, 
         {
           "char_offset": 47,
           "dep": "pobj",
@@ -416,11 +416,11 @@
           "shape": "xxxx",
           "suffix": "ion",
           "tag": "CD",
-          "text": "billion",
-          "text_with_ws": "billion",
+          "text": "billion", 
+          "text_with_ws": "billion", 
           "whitespace": ""
         }
-      ],
+      ], 
       "text": "Apple is looking at buying U.K. startup for $1 billion"
     }
   ]
