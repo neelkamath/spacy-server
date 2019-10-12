@@ -3,7 +3,7 @@ info:
   title: spaCy
   version: '0'
   description:
-    Named entity recognition using spaCy NLP.
+    This HTTP API provides access to spaCy's NLP for English.
 
     You can view the documentation for previous versions
     [here](https://github.com/neelkamath/spacy-server/releases).
@@ -414,7 +414,7 @@ paths:
                                   inside an entity, `“O”` means it is outside an entity, and `""` means no entity tag is set.
                               ent_type:
                                 type: string
-                                enum:  *nerEnum
+                                enum: *nerEnum
                                 description: *nerDesc
                               head:
                                 type: string
@@ -646,8 +646,8 @@ paths:
                                   - ','
                                   - ':'
                                   - .
-                                  - ''
-                                  - ""
+                                  - "''"
+                                  - '""'
                                   - <InlineCode>&#96;&#96;</InlineCode>
                                   - '#'
                                   - $
@@ -708,7 +708,6 @@ paths:
                                 enum:  [' ', '']
                                 description: Trailing space character if present.
                             required:
-                              - sent
                               - text
                               - text_with_ws
                               - whitespace
@@ -745,7 +744,7 @@ paths:
                               - lang
                               - prob
                               - char_offset
-                      required: [sentence, tags]
+                      required: [text, tags]
                 required: [data]
   /tokenizer:
     post:
@@ -776,7 +775,9 @@ paths:
                 type: object
                 properties:
                   tokens:
-                    type: string
+                    type: array
+                    items:
+                      type: string
                 required: [tokens]
   /sentencizer:
     post:

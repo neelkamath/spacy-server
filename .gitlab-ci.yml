@@ -46,7 +46,7 @@ build-image:
     - docker push $CI_REGISTRY_IMAGE:$(cat version.txt)
   artifacts:
     paths: [version.txt]
-  only: [master]
+  # TODO: Uncomment: only: [master]
 
 build-docs:
   stage: build
@@ -56,7 +56,7 @@ build-docs:
     - redoc-cli bundle docs/openapi.yaml --title 'spaCy'
   artifacts:
     paths: [redoc-static.html]
-  only: [master]
+  # TODO: Uncomment: only: [master]
 
 docker-hub:
   stage: push
@@ -69,7 +69,7 @@ docker-hub:
     - docker tag $CI_REGISTRY_IMAGE:$(cat version.txt) $DOCKER_HUB_USER/spacy-server:$(cat version.txt)
     - docker push $DOCKER_HUB_USER/spacy-server
     - docker push $DOCKER_HUB_USER/spacy-server:$(cat version.txt)
-  only: [master]
+  # TODO: Uncomment: only: [master]
 
 heroku-push:
   stage: push
@@ -82,7 +82,7 @@ heroku-push:
     - echo $(docker inspect registry.heroku.com/$HEROKU_APP/web --format='{{.Id}}') > image_id.txt
   artifacts:
     paths: [image_id.txt]
-  only: [master]
+  # TODO: Uncomment: only: [master]
 
 heroku-release:
   stage: deploy
@@ -93,7 +93,7 @@ heroku-release:
       -H 'Content-Type: application/json' \
       -H 'Accept: application/vnd.heroku+json; version=3.docker-releases' \
       -H "Authorization: Bearer $HEROKU_AUTH_TOKEN"
-  only: [master]
+  # TODO: Uncomment: only: [master]
 
 pages:
   stage: deploy
@@ -102,4 +102,4 @@ pages:
     - cp redoc-static.html public/index.html
   artifacts:
     paths: [public]
-  only: [master]
+  # TODO: Uncomment: only: [master]
