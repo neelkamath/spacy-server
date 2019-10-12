@@ -1,5 +1,3 @@
-# TODO: Test Docker Hub, Heroku, GitLab pages, and upload the new release after merging the PR.
-
 # This block is a workaround for https://forum.gitlab.com/t/docker-dind-stops-working-after-12-1-0-update/28664/4.
 services:
   - name: docker:dind
@@ -48,7 +46,7 @@ build-image:
     - docker push $CI_REGISTRY_IMAGE:$(cat version.txt)
   artifacts:
     paths: [version.txt]
-  # TODO: Uncomment: only: [master]
+  only: [master]
 
 build-docs:
   stage: build
@@ -58,7 +56,7 @@ build-docs:
     - redoc-cli bundle docs/openapi.yaml --title 'spaCy'
   artifacts:
     paths: [redoc-static.html]
-  # TODO: Uncomment: only: [master]
+  only: [master]
 
 docker-hub:
   stage: push
@@ -71,7 +69,7 @@ docker-hub:
     - docker tag $CI_REGISTRY_IMAGE:$(cat version.txt) $DOCKER_HUB_USER/spacy-server:$(cat version.txt)
     - docker push $DOCKER_HUB_USER/spacy-server
     - docker push $DOCKER_HUB_USER/spacy-server:$(cat version.txt)
-  # TODO: Uncomment: only: [master]
+  only: [master]
 
 heroku-push:
   stage: push
@@ -84,7 +82,7 @@ heroku-push:
     - echo $(docker inspect registry.heroku.com/$HEROKU_APP/web --format='{{.Id}}') > image_id.txt
   artifacts:
     paths: [image_id.txt]
-  # TODO: Uncomment: only: [master]
+  only: [master]
 
 heroku-release:
   stage: deploy
@@ -95,7 +93,7 @@ heroku-release:
       -H 'Content-Type: application/json' \
       -H 'Accept: application/vnd.heroku+json; version=3.docker-releases' \
       -H "Authorization: Bearer $HEROKU_AUTH_TOKEN"
-  # TODO: Uncomment: only: [master]
+  only: [master]
 
 pages:
   stage: deploy
@@ -104,4 +102,4 @@ pages:
     - cp redoc-static.html public/index.html
   artifacts:
     paths: [public]
-  # TODO: Uncomment: only: [master]
+  only: [master]
