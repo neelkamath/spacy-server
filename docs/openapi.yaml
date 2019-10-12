@@ -160,7 +160,6 @@ paths:
                                 description: The token offset for the end of the entity.
                               text_with_ws:
                                 type: string
-                                enum: [' ', '']
                                 description:
                                   The text content of the entity with a trailing whitespace character if the last token
                                   has one.
@@ -748,11 +747,11 @@ paths:
                               - char_offset
                       required: [sentence, tags]
                 required: [data]
-  /tokenize:
+  /tokenizer:
     post:
       tags: [nlp]
       description: Tokenization
-      operationId: tokenize
+      operationId: tokenizer
       requestBody:
         required: true
         description: Text to tokenize
@@ -772,24 +771,46 @@ paths:
           content:
             application/json:
               example:
-                tokens:
-                  - Apple
-                  - is
-                  - looking
-                  - at
-                  - buying
-                  - U.K.
-                  - startup
-                  - for
-                  - '$'
-                  - '1'
-                  - billion
+                tokens: [Apple, is, looking, at, buying, U.K., startup, for, $, '1', billion]
               schema:
                 type: object
                 properties:
                   tokens:
                     type: string
                 required: [tokens]
+  /sentencizer:
+    post:
+      tags: [nlp]
+      description: Sentence segmentation
+      operationId: sentencizer
+      requestBody:
+        required: true
+        description: Sentences to segmentize
+        content:
+          application/json:
+            example:
+              text: Apple is looking at buying U.K. startup for $1 billion. Another sentence.
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+              required: [text]
+      responses:
+        200:
+          description: Sentences
+          content:
+            application/json:
+              example:
+                sentences: [Apple is looking at buying U.K. startup for $1 billion., Another sentence.]
+              schema:
+                type: object
+                properties:
+                  sentences:
+                    type: array
+                    items:
+                      type: string
+                required: [sentences]
   /health_check:
     get:
       tags: [status]

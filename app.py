@@ -91,10 +91,18 @@ def build_token(token):
     }
 
 
-@app.route('/tokenize', methods=['POST'])
+@app.route('/tokenizer', methods=['POST'])
 def tokenize():
-    doc = nlp(flask.request.get_json()['text'])
+    text = flask.request.get_json()['text']
+    doc = nlp(text, disable=['tagger', 'parser', 'ner'])
     return {'tokens': [token.text for token in doc]}
+
+
+@app.route('/sentencizer', methods=['POST'])
+def sentencize():
+    text = flask.request.get_json()['text']
+    doc = nlp(text, disable=['tagger', 'ner'])
+    return {'sentences': [sent.text for sent in doc.sents]}
 
 
 @app.route('/health_check')

@@ -30,8 +30,18 @@ class TestServer(unittest.TestCase):
     def test_tokenizer(self):
         with app.app.test_client() as client:
             text = 'Apple is looking at buying U.K. startup for $1 billion'
-            response = client.post('/tokenize', json={'text': text}).get_json()
-            with open('outputs/tokenize.json') as f:
+            response = client.post('/tokenizer', json={'text': text}).get_json()
+            with open('outputs/tokenizer.json') as f:
+                self.assertEqual(response, json.load(f))
+
+    def test_sentencizer(self):
+        with app.app.test_client() as client:
+            body = {
+                'text': 'Apple is looking at buying U.K. startup for $1 '
+                        + 'billion. Another sentence.'
+            }
+            response = client.post('/sentencizer', json=body).get_json()
+            with open('outputs/sentencizer.json') as f:
                 self.assertEqual(response, json.load(f))
 
     def test_health_check(self):
