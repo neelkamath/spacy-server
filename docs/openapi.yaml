@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: spaCy
-  version: '0'
+  version: '1'
   description:
     This HTTP API provides access to spaCy's NLP for English.
 
