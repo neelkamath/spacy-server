@@ -1,3 +1,5 @@
+# TODO: Test Docker Hub, Heroku, GitLab pages, and upload the new release after merging the PR.
+
 # This block is a workaround for https://forum.gitlab.com/t/docker-dind-stops-working-after-12-1-0-update/28664/4.
 services:
   - name: docker:dind

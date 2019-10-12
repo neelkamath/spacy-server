@@ -1,10 +1,10 @@
 """Provides spaCy NLP over an HTTP API."""
 
-import en_core_web_lg
+import en_core_web_sm
 import flask
 
 app = flask.Flask(__name__)
-nlp = en_core_web_lg.load()
+nlp = en_core_web_sm.load()
 
 
 @app.route('/ner', methods=['POST'])

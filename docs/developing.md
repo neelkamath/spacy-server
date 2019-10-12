@@ -27,7 +27,7 @@ The server will be running on `http://127.0.0.1:5000`, and will have automatic r
 
 `docker build . -t spacy-server`
 
-To serve at `http://localhost:8080`, run `docker run --rm -p 8080:8080 spacy-server`. You can change the port by setting the `PORT` environment variable (e.g., `docker run --rm -e PORT=6969 -p 6969:6969 crytal-skull`). The container `EXPOSE`s port `8080`.
+To serve at `http://localhost:8080`, run `docker run --rm -p 8080:8080 spacy-server`. You can change the port by setting the `PORT` environment variable (e.g., `docker run --rm -e PORT=6969 -p 6969:6969 spacy-server`). The container `EXPOSE`s port `8080`.
 
 ## Specification
 
