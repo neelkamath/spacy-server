@@ -33,16 +33,7 @@ paths:
                 - Net income was $9.4 million compared to the prior year of $2.7 million. Google is a big company.
                 - Revenue exceeded twelve billion dollars, with a loss of $1b.
             schema:
-              type: object
-              properties:
-                sections:
-                  description:
-                    Although you could pass the full text as a single array item, it would be faster to split large text
-                    into multiple items. Each item needn't be semantically related.
-                  type: array
-                  items:
-                    type: string
-              required: [sections]
+              $ref: '#/components/schemas/Sections'
       responses:
         200:
           description: Labeled text
@@ -69,105 +60,7 @@ paths:
                         text_with_ws: Sundar Pichai
                       text: Google is headed by Sundar Pichai.
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        entities:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              text:
-                                type: string
-                                description: A unicode representation of the entity text.
-                              label:
-                                description: &nerDesc |
-                                  The entity type.
-
-                                  `"PERSON"`: People, including fictional.
-
-                                  `"NORP"`: Nationalities or religious or political groups.
-
-                                  `"FAC"`: Buildings, airports, highways, bridges, etc.
-
-                                  `"ORG"`: Companies, agencies, institutions, etc.
-
-                                  `"GPE"`: Countries, cities, states.
-
-                                  `"LOC"`: Non-GPE locations, mountain ranges, bodies of water.
-
-                                  `"PRODUCT"`: Objects, vehicles, foods, etc. (Not services.)
-
-                                  `"EVENT"`: Named hurricanes, battles, wars, sports events, etc.
-
-                                  `"WORK_OF_ART"`: Titles of books, songs, etc.
-
-                                  `"LAW"`: Named documents made into laws.
-
-                                  `"LANGUAGE"`: Any named language.
-
-                                  `"DATE"`: Absolute or relative dates or periods.
-
-                                  `"TIME"`: Times smaller than a day.
-
-                                  `"PERCENT"`: Percentage, including ”%“.
-
-                                  `"MONEY"`: Monetary values, including unit.
-
-                                  `"QUANTITY"`: Measurements, as of weight or distance.
-
-                                  `"ORDINAL"`: “first”, “second”, etc.
-
-                                  `"CARDINAL"`: Numerals that do not fall under another type.
-                                type: string
-                                enum: &nerEnum
-                                  - PERSON
-                                  - NORP
-                                  - FAC
-                                  - ORG
-                                  - GPE
-                                  - LOC
-                                  - PRODUCT
-                                  - EVENT
-                                  - WORK_OF_ART
-                                  - LAW
-                                  - LANGUAGE
-                                  - DATE
-                                  - TIME
-                                  - PERCENT
-                                  - MONEY
-                                  - QUANTITY
-                                  - ORDINAL
-                                  - CARDINAL
-                              start_char:
-                                type: integer
-                                description: The character offset for the start of the entity.
-                              end_char:
-                                type: integer
-                                description: The character offset for the end of the entity.
-                              lemma:
-                                type: string
-                                description: The entity’s lemma.
-                              start:
-                                type: integer
-                                description: The token offset for the start of the entity.
-                              end:
-                                type: integer
-                                description: The token offset for the end of the entity.
-                              text_with_ws:
-                                type: string
-                                description:
-                                  The text content of the entity with a trailing whitespace character if the last token
-                                  has one.
-                            required: [start, end, text, text_with_ws, start_char, end_char, lemma, label]
-                        text:
-                          type: string
-                      required: [entities, text]
-                required: [data]
+                $ref: '#/components/schemas/NamedEntities'
   /pos:
     post:
       tags: [nlp]
@@ -188,11 +81,7 @@ paths:
                 value:
                   text: Apple is looking at buying U.K. startup for $1 billion
             schema:
-              type: object
-              properties:
-                text:
-                  type: string
-              required: [text]
+              $ref: '#/components/schemas/Text'
       responses:
         200:
           description: Annotated text
@@ -239,513 +128,7 @@ paths:
                         text_with_ws: 'Google '
                         whitespace: ' '
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        text:
-                          type: string
-                          description: The sentence or phrase being tagged.
-                        tags:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              char_offset:
-                                type: integer
-                                description: The character offset of the token within the parent document.
-                              dep:
-                                type: string
-                                enum:
-                                  - acl
-                                  - acomp
-                                  - advcl
-                                  - advmod
-                                  - agent
-                                  - amod
-                                  - appos
-                                  - attr
-                                  - aux
-                                  - auxpass
-                                  - case
-                                  - cc
-                                  - ccomp
-                                  - compound
-                                  - conj
-                                  - cop
-                                  - csubj
-                                  - csubjpass
-                                  - dative
-                                  - dep
-                                  - det
-                                  - dobj
-                                  - expl
-                                  - intj
-                                  - mark
-                                  - meta
-                                  - neg
-                                  - nn
-                                  - nounmod
-                                  - npmod
-                                  - nsubj
-                                  - nsubjpass
-                                  - nummod
-                                  - oprd
-                                  - obj
-                                  - obl
-                                  - parataxis
-                                  - pcomp
-                                  - pobj
-                                  - poss
-                                  - preconj
-                                  - prep
-                                  - prt
-                                  - punct
-                                  - quantmod
-                                  - relcl
-                                  - root
-                                  - xcomp
-                                description: |
-                                  Syntactic dependency relation.
-
-                                  `"acl"`: clausal modifier of noun (adjectival clause)
-
-                                  `"acomp"`: adjectival complement
-
-                                  `"advcl"`: adverbial clause modifier
-
-                                  `"advmod"`: adverbial modifier
-
-                                  `"agent"`: agent
-
-                                  `"amod"`: adjectival modifier
-
-                                  `"appos"`: appositional modifier
-
-                                  `"attr"`: attribute
-
-                                  `"aux"`: auxiliary
-
-                                  `"auxpass"`: auxiliary (passive)
-
-                                  `"case"`: case marking
-
-                                  `"cc"`: coordinating conjunction
-
-                                  `"ccomp"`: clausal complement
-
-                                  `"compound"`: compound
-
-                                  `"conj"`: conjunct
-
-                                  `"cop"`: copula
-
-                                  `"csubj"`: clausal subject
-
-                                  `"csubjpass"`: clausal subject (passive)
-
-                                  `"dative"`: dative
-
-                                  `"dep"`: unclassified dependent
-
-                                  `"det"`: determiner
-
-                                  `"dobj"`: direct object
-
-                                  `"expl"`: expletive
-
-                                  `"intj"`: interjection
-
-                                  `"mark"`: marker
-
-                                  `"meta"`: meta modifier
-
-                                  `"neg"`: negation modifier
-
-                                  `"nn"`: noun compound modifier
-
-                                  `"nounmod"`: modifier of nominal
-
-                                  `"npmod"`: noun phrase as adverbial modifier
-
-                                  `"nsubj"`: nominal subject
-
-                                  `"nsubjpass"`: nominal subject (passive)
-
-                                  `"nummod"`: numeric modifier
-
-                                  `"oprd"`: object predicate
-
-                                  `"obj"`: object
-
-                                  `"obl"`: oblique nominal
-
-                                  `"parataxis"`: parataxis
-
-                                  `"pcomp"`: complement of preposition
-
-                                  `"pobj"`: object of preposition
-
-                                  `"poss"`: possession modifier
-
-                                  `"preconj"`: pre-correlative conjunction
-
-                                  `"prep"`: prepositional modifier
-
-                                  `"prt"`: particle
-
-                                  `"punct"`: punctuation
-
-                                  `"quantmod"`: modifier of quantifier
-
-                                  `"relcl"`: relative clause modifier
-
-                                  `"root"`: root
-
-                                  `"xcomp"`: open clausal complement
-                              ent_iob:
-                                type: string
-                                enum:  [B, I, O, '']
-                                description:
-                                  IOB code of named entity tag. `“B”` means the token begins an entity, `“I”` means it is
-                                  inside an entity, `“O”` means it is outside an entity, and `""` means no entity tag is set.
-                              ent_type:
-                                type: string
-                                enum: *nerEnum
-                                description: *nerDesc
-                              head:
-                                type: string
-                                description: The syntactic parent, or “governor”, of this token.
-                              index:
-                                type: integer
-                                description: The index of the token within the parent document.
-                              is_alpha:
-                                type: boolean
-                                description: Does the token consist of alphabetic characters?
-                              is_ascii:
-                                type: boolean
-                                description: Does the token consist of ASCII characters?
-                              is_bracket:
-                                type: boolean
-                                description: Is the token a bracket?
-                              is_currency:
-                                type: boolean
-                                description: Is the token a currency symbol?
-                              is_digit:
-                                type: boolean
-                                description: Does the token consist of digits?
-                              is_left_punct:
-                                type: boolean
-                                description: Is the token a left punctuation mark (e.g. `(`)?
-                              is_oov:
-                                type: boolean
-                                description: Is the token out-of-vocabulary?
-                              is_punct:
-                                type: boolean
-                                description: Is the token punctuation?
-                              is_quote:
-                                type: boolean
-                                description: Is the token a quotation mark?
-                              is_right_punct:
-                                type: boolean
-                                description: Is the token a right punctuation mark (e.g. `)`)?
-                              is_space:
-                                type: boolean
-                                description: Does the token consist of whitespace characters?
-                              is_stop:
-                                type: boolean
-                                description: Is the token part of a “stop list”?
-                              is_title:
-                                type: boolean
-                                description: Is the token in titlecase?
-                              lang:
-                                type: string
-                                enum:
-                                  - af
-                                  - ar
-                                  - bg
-                                  - bn
-                                  - ca
-                                  - cs
-                                  - da
-                                  - de
-                                  - el
-                                  - en
-                                  - es
-                                  - et
-                                  - fa
-                                  - fi
-                                  - fr
-                                  - ga
-                                  - he
-                                  - hi
-                                  - hr
-                                  - hu
-                                  - id
-                                  - is
-                                  - it
-                                  - ja
-                                  - kn
-                                  - ko
-                                  - lt
-                                  - lv
-                                  - mr
-                                  - nb
-                                  - nl
-                                  - pl
-                                  - pt
-                                  - ro
-                                  - ru
-                                  - si
-                                  - sk
-                                  - sl
-                                  - sq
-                                  - sr
-                                  - sv
-                                  - ta
-                                  - te
-                                  - th
-                                  - tl
-                                  - tr
-                                  - tt
-                                  - uk
-                                  - ur
-                                  - vi
-                                  - xx
-                                  - zh
-                                description:
-                                  The [ISO 639-1 code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) for the
-                                  language of the parent document’s vocabulary.
-                              left_edge:
-                                type: string
-                                description: The leftmost token of this token’s syntactic descendants.
-                              lemma:
-                                type: string
-                                description: Base form of the token, with no inflectional suffixes.
-                              like_email:
-                                type: boolean
-                                description: Does the token resemble an email address?
-                              like_num:
-                                type: boolean
-                                description: Does the token represent a number (e.g. `10.9`, `10`, `"ten"`)?
-                              like_url:
-                                type: boolean
-                                description: Does the token resemble a URL?
-                              normalized:
-                                type: string
-                                description: The token’s norm (i.e., a normalized form of the token text).
-                              pos:
-                                type: string
-                                enum:
-                                  - PUNCT
-                                  - SYM
-                                  - X
-                                  - ADJ
-                                  - VERB
-                                  - CONJ
-                                  - NUM
-                                  - DET
-                                  - ADV
-                                  - ADP
-                                  - NOUN
-                                  - PROPN
-                                  - PART
-                                  - PRON
-                                  - SPACE
-                                  - INTJ
-                                description: &posDesc |
-                                  The tag is the fine-grained part-of-speech.
-
-                                  The pos is the coarse-grained part-of-speech.
-
-                                  | Tag                                 |  POS    | Morphology                                     | Description                               |
-                                  | ----------------------------------- | ------- | ---------------------------------------------- | ----------------------------------------- |
-                                  | `-LRB-`                             | `PUNCT` | `PunctType=brck PunctSide=ini`                 | left round bracket                        |
-                                  | `-RRB-`                             | `PUNCT` | `PunctType=brck PunctSide=fin`                 | right round bracket                       |
-                                  | `,`                                 | `PUNCT` | `PunctType=comm`                               | punctuation mark, comma                   |
-                                  | `:`                                 | `PUNCT` |                                                | punctuation mark, colon or ellipsis       |
-                                  | `.`                                 | `PUNCT` | `PunctType=peri`                               | punctuation mark, sentence closer         |
-                                  | `''`                                | `PUNCT` | `PunctType=quot PunctSide=fin`                 | closing quotation mark                    |
-                                  | `""`                                | `PUNCT` | `PunctType=quot PunctSide=fin`                 | closing quotation mark                    |
-                                  | <InlineCode>&#96;&#96;</InlineCode> | `PUNCT` | `PunctType=quot PunctSide=ini`                 | opening quotation mark                    |
-                                  | `#`                                 | `SYM`   | `SymType=numbersign`                           | symbol, number sign                       |
-                                  | `$`                                 | `SYM`   | `SymType=currency`                             | symbol, currency                          |
-                                  | `ADD`                               | `X`     |                                                | email                                     |
-                                  | `AFX`                               | `ADJ`   | `Hyph=yes`                                     | affix                                     |
-                                  | `BES`                               | `VERB`  |                                                | auxiliary "be"                            |
-                                  | `CC`                                | `CONJ`  | `ConjType=coor`                                | conjunction, coordinating                 |
-                                  | `CD`                                | `NUM`   | `NumType=card`                                 | cardinal number                           |
-                                  | `DT`                                | `DET`   |                                                | determiner                                |
-                                  | `EX`                                | `ADV`   | `AdvType=ex`                                   | existential there                         |
-                                  | `FW`                                | `X`     | `Foreign=yes`                                  | foreign word                              |
-                                  | `GW`                                | `X`     |                                                | additional word in multi-word expression  |
-                                  | `HVS`                               | `VERB`  |                                                | forms of "have"                           |
-                                  | `HYPH`                              | `PUNCT` | `PunctType=dash`                               | punctuation mark, hyphen                  |
-                                  | `IN`                                | `ADP`   |                                                | conjunction, subordinating or preposition |
-                                  | `JJ`                                | `ADJ`   | `Degree=pos`                                   | adjective                                 |
-                                  | `JJR`                               | `ADJ`   | `Degree=comp`                                  | adjective, comparative                    |
-                                  | `JJS`                               | `ADJ`   | `Degree=sup`                                   | adjective, superlative                    |
-                                  | `LS`                                | `PUNCT` | `NumType=ord`                                  | list item marker                          |
-                                  | `MD`                                | `VERB`  | `VerbType=mod`                                 | verb, modal auxiliary                     |
-                                  | `NFP`                               | `PUNCT` |                                                | superfluous punctuation                   |
-                                  | `NIL`                               |         |                                                | missing tag                               |
-                                  | `NN`                                | `NOUN`  | `Number=sing`                                  | noun, singular or mass                    |
-                                  | `NNP`                               | `PROPN` | `NounType=prop Number=sign`                    | noun, proper singular                     |
-                                  | `NNPS`                              | `PROPN` | `NounType=prop Number=plur`                    | noun, proper plural                       |
-                                  | `NNS`                               | `NOUN`  | `Number=plur`                                  | noun, plural                              |
-                                  | `PDT`                               | `ADJ`   | `AdjType=pdt PronType=prn`                     | predeterminer                             |
-                                  | `POS`                               | `PART`  | `Poss=yes`                                     | possessive ending                         |
-                                  | `PRP`                               | `PRON`  | `PronType=prs`                                 | pronoun, personal                         |
-                                  | `PRP$`                              | `ADJ`   | `PronType=prs Poss=yes`                        | pronoun, possessive                       |
-                                  | `RB`                                | `ADV`   | `Degree=pos`                                   | adverb                                    |
-                                  | `RBR`                               | `ADV`   | `Degree=comp`                                  | adverb, comparative                       |
-                                  | `RBS`                               | `ADV`   | `Degree=sup`                                   | adverb, superlative                       |
-                                  | `RP`                                | `PART`  |                                                | adverb, particle                          |
-                                  | `_SP`                               | `SPACE` |                                                | space                                     |
-                                  | `SYM`                               | `SYM`   |                                                | symbol                                    |
-                                  | `TO`                                | `PART`  | `PartType=inf VerbForm=inf`                    | infinitival "to"                          |
-                                  | `UH`                                | `INTJ`  |                                                | interjection                              |
-                                  | `VB`                                | `VERB`  | `VerbForm=inf`                                 | verb, base form                           |
-                                  | `VBD`                               | `VERB`  | `VerbForm=fin Tense=past`                      | verb, past tense                          |
-                                  | `VBG`                               | `VERB`  | `VerbForm=part Tense=pres Aspect=prog`         | verb, gerund or present participle        |
-                                  | `VBN`                               | `VERB`  | `VerbForm=part Tense=past Aspect=perf`         | verb, past participle                     |
-                                  | `VBP`                               | `VERB`  | `VerbForm=fin Tense=pres`                      | verb, non-3rd person singular present     |
-                                  | `VBZ`                               | `VERB`  | `VerbForm=fin Tense=pres Number=sing Person=3` | verb, 3rd person singular present         |
-                                  | `WDT`                               | `ADJ`   | `PronType=int|rel`                             | wh-determiner                             |
-                                  | `WP`                                | `NOUN`  | `PronType=int|rel`                             | wh-pronoun, personal                      |
-                                  | `WP$`                               | `ADJ`   | `Poss=yes PronType=int|rel`                    | wh-pronoun, possessive                    |
-                                  | `WRB`                               | `ADV`   | `PronType=int|rel`                             | wh-adverb                                 |
-                                  | `XX`                                | `X`     |                                                | unknown                                   |
-                              prefix:
-                                type: string
-                                description: A length-N substring from the start of the token. Defaults to `N=1`.
-                              prob:
-                                type: number
-                                description:
-                                  Smoothed log probability estimate of token’s word type (context-independent entry in
-                                  the vocabulary).
-                              right_edge:
-                                type: string
-                                description: The rightmost token of this token’s syntactic descendants.
-                              shape:
-                                type: string
-                                description:
-                                  Transform of the tokens’s string, to show orthographic features (e.g., `“Xxxx”` or `“dd”`).
-                              suffix:
-                                type: string
-                                description: Length-N substring from the end of the token. Defaults to `N=3`.
-                              tag:
-                                type: string
-                                description: *posDesc
-                                enum:
-                                  - -LRB-
-                                  - -RRB-
-                                  - ','
-                                  - ':'
-                                  - .
-                                  - "''"
-                                  - '""'
-                                  - <InlineCode>&#96;&#96;</InlineCode>
-                                  - '#'
-                                  - $
-                                  - ADD
-                                  - AFX
-                                  - BES
-                                  - CC
-                                  - CD
-                                  - DT
-                                  - EX
-                                  - FW
-                                  - GW
-                                  - HVS
-                                  - HYPH
-                                  - IN
-                                  - JJ
-                                  - JJR
-                                  - JJS
-                                  - LS
-                                  - MD
-                                  - NFP
-                                  - NIL
-                                  - NN
-                                  - NNP
-                                  - NNPS
-                                  - NNS
-                                  - PDT
-                                  - POS
-                                  - PRP
-                                  - PRP$
-                                  - RB
-                                  - RBR
-                                  - RBS
-                                  - RP
-                                  - _SP
-                                  - SYM
-                                  - TO
-                                  - UH
-                                  - VB
-                                  - VBD
-                                  - VBG
-                                  - VBN
-                                  - VBP
-                                  - VBZ
-                                  - WDT
-                                  - WP
-                                  - WP$
-                                  - WRB
-                                  - XX
-                              text:
-                                type: string
-                                description: Verbatim text content.
-                              text_with_ws:
-                                type: string
-                                description: Text content, with trailing space character if present.
-                              whitespace:
-                                type: string
-                                enum:  [' ', '']
-                                description: Trailing space character if present.
-                            required:
-                              - text
-                              - text_with_ws
-                              - whitespace
-                              - head
-                              - left_edge
-                              - right_edge
-                              - index
-                              - ent_type
-                              - ent_iob
-                              - lemma
-                              - normalized
-                              - shape
-                              - prefix
-                              - suffix
-                              - is_alpha
-                              - is_ascii
-                              - is_digit
-                              - is_title
-                              - is_punct
-                              - is_left_punct
-                              - is_right_punct
-                              - is_space
-                              - is_bracket
-                              - is_quote
-                              - is_currency
-                              - like_url
-                              - like_num
-                              - like_email
-                              - is_oov
-                              - is_stop
-                              - pos
-                              - tag
-                              - dep
-                              - lang
-                              - prob
-                              - char_offset
-                      required: [text, tags]
-                required: [data]
+                $ref: '#/components/schemas/PartsOfSpeech'
   /tokenizer:
     post:
       tags: [nlp]
@@ -759,11 +142,7 @@ paths:
             example:
               text: Apple is looking at buying U.K. startup for $1 billion
             schema:
-              type: object
-              properties:
-                text:
-                  type: string
-              required: [text]
+              $ref: '#/components/schemas/Text'
       responses:
         200:
           description: Tokenized text
@@ -772,13 +151,7 @@ paths:
               example:
                 tokens: [Apple, is, looking, at, buying, U.K., startup, for, $, '1', billion]
               schema:
-                type: object
-                properties:
-                  tokens:
-                    type: array
-                    items:
-                      type: string
-                required: [tokens]
+                $ref: '#/components/schemas/Tokens'
   /sentencizer:
     post:
       tags: [nlp]
@@ -792,11 +165,7 @@ paths:
             example:
               text: Apple is looking at buying U.K. startup for $1 billion. Another sentence.
             schema:
-              type: object
-              properties:
-                text:
-                  type: string
-              required: [text]
+              $ref: '#/components/schemas/Text'
       responses:
         200:
           description: Sentences
@@ -805,13 +174,7 @@ paths:
               example:
                 sentences: [Apple is looking at buying U.K. startup for $1 billion., Another sentence.]
               schema:
-                type: object
-                properties:
-                  sentences:
-                    type: array
-                    items:
-                      type: string
-                required: [sentences]
+                $ref: '#/components/schemas/Sentences'
   /health_check:
     get:
       tags: [status]
@@ -820,3 +183,646 @@ paths:
       responses:
         204:
           description: All systems are operational
+components:
+  schemas:
+    Sections:
+      type: object
+      properties:
+        sections:
+          description:
+            Although you could pass the full text as a single array item, it would be faster to split large text
+            into multiple items. Each item needn't be semantically related.
+          type: array
+          items:
+            type: string
+      required: [sections]
+    NamedEntities:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              entities:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+                      description: A unicode representation of the entity text.
+                    label:
+                      description: &nerDesc |
+                        The entity type.
+
+                        `"PERSON"`: People, including fictional.
+
+                        `"NORP"`: Nationalities or religious or political groups.
+
+                        `"FAC"`: Buildings, airports, highways, bridges, etc.
+
+                        `"ORG"`: Companies, agencies, institutions, etc.
+
+                        `"GPE"`: Countries, cities, states.
+
+                        `"LOC"`: Non-GPE locations, mountain ranges, bodies of water.
+
+                        `"PRODUCT"`: Objects, vehicles, foods, etc. (Not services.)
+
+                        `"EVENT"`: Named hurricanes, battles, wars, sports events, etc.
+
+                        `"WORK_OF_ART"`: Titles of books, songs, etc.
+
+                        `"LAW"`: Named documents made into laws.
+
+                        `"LANGUAGE"`: Any named language.
+
+                        `"DATE"`: Absolute or relative dates or periods.
+
+                        `"TIME"`: Times smaller than a day.
+
+                        `"PERCENT"`: Percentage, including ”%“.
+
+                        `"MONEY"`: Monetary values, including unit.
+
+                        `"QUANTITY"`: Measurements, as of weight or distance.
+
+                        `"ORDINAL"`: “first”, “second”, etc.
+
+                        `"CARDINAL"`: Numerals that do not fall under another type.
+                      type: string
+                      enum: &nerEnum
+                        - PERSON
+                        - NORP
+                        - FAC
+                        - ORG
+                        - GPE
+                        - LOC
+                        - PRODUCT
+                        - EVENT
+                        - WORK_OF_ART
+                        - LAW
+                        - LANGUAGE
+                        - DATE
+                        - TIME
+                        - PERCENT
+                        - MONEY
+                        - QUANTITY
+                        - ORDINAL
+                        - CARDINAL
+                    start_char:
+                      type: integer
+                      description: The character offset for the start of the entity.
+                    end_char:
+                      type: integer
+                      description: The character offset for the end of the entity.
+                    lemma:
+                      type: string
+                      description: The entity’s lemma.
+                    start:
+                      type: integer
+                      description: The token offset for the start of the entity.
+                    end:
+                      type: integer
+                      description: The token offset for the end of the entity.
+                    text_with_ws:
+                      type: string
+                      description:
+                        The text content of the entity with a trailing whitespace character if the last token
+                        has one.
+                  required: [start, end, text, text_with_ws, start_char, end_char, lemma, label]
+              text:
+                type: string
+            required: [entities, text]
+      required: [data]
+    Text:
+      type: object
+      properties:
+        text:
+          type: string
+      required: [text]
+    PartsOfSpeech:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+                description: The sentence or phrase being tagged.
+              tags:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    char_offset:
+                      type: integer
+                      description: The character offset of the token within the parent document.
+                    dep:
+                      type: string
+                      enum:
+                        - acl
+                        - acomp
+                        - advcl
+                        - advmod
+                        - agent
+                        - amod
+                        - appos
+                        - attr
+                        - aux
+                        - auxpass
+                        - case
+                        - cc
+                        - ccomp
+                        - compound
+                        - conj
+                        - cop
+                        - csubj
+                        - csubjpass
+                        - dative
+                        - dep
+                        - det
+                        - dobj
+                        - expl
+                        - intj
+                        - mark
+                        - meta
+                        - neg
+                        - nn
+                        - nounmod
+                        - npmod
+                        - nsubj
+                        - nsubjpass
+                        - nummod
+                        - oprd
+                        - obj
+                        - obl
+                        - parataxis
+                        - pcomp
+                        - pobj
+                        - poss
+                        - preconj
+                        - prep
+                        - prt
+                        - punct
+                        - quantmod
+                        - relcl
+                        - root
+                        - xcomp
+                      description: |
+                        Syntactic dependency relation.
+
+                        `"acl"`: clausal modifier of noun (adjectival clause)
+
+                        `"acomp"`: adjectival complement
+
+                        `"advcl"`: adverbial clause modifier
+
+                        `"advmod"`: adverbial modifier
+
+                        `"agent"`: agent
+
+                        `"amod"`: adjectival modifier
+
+                        `"appos"`: appositional modifier
+
+                        `"attr"`: attribute
+
+                        `"aux"`: auxiliary
+
+                        `"auxpass"`: auxiliary (passive)
+
+                        `"case"`: case marking
+
+                        `"cc"`: coordinating conjunction
+
+                        `"ccomp"`: clausal complement
+
+                        `"compound"`: compound
+
+                        `"conj"`: conjunct
+
+                        `"cop"`: copula
+
+                        `"csubj"`: clausal subject
+
+                        `"csubjpass"`: clausal subject (passive)
+
+                        `"dative"`: dative
+
+                        `"dep"`: unclassified dependent
+
+                        `"det"`: determiner
+
+                        `"dobj"`: direct object
+
+                        `"expl"`: expletive
+
+                        `"intj"`: interjection
+
+                        `"mark"`: marker
+
+                        `"meta"`: meta modifier
+
+                        `"neg"`: negation modifier
+
+                        `"nn"`: noun compound modifier
+
+                        `"nounmod"`: modifier of nominal
+
+                        `"npmod"`: noun phrase as adverbial modifier
+
+                        `"nsubj"`: nominal subject
+
+                        `"nsubjpass"`: nominal subject (passive)
+
+                        `"nummod"`: numeric modifier
+
+                        `"oprd"`: object predicate
+
+                        `"obj"`: object
+
+                        `"obl"`: oblique nominal
+
+                        `"parataxis"`: parataxis
+
+                        `"pcomp"`: complement of preposition
+
+                        `"pobj"`: object of preposition
+
+                        `"poss"`: possession modifier
+
+                        `"preconj"`: pre-correlative conjunction
+
+                        `"prep"`: prepositional modifier
+
+                        `"prt"`: particle
+
+                        `"punct"`: punctuation
+
+                        `"quantmod"`: modifier of quantifier
+
+                        `"relcl"`: relative clause modifier
+
+                        `"root"`: root
+
+                        `"xcomp"`: open clausal complement
+                    ent_iob:
+                      type: string
+                      enum: [B, I, O, '']
+                      description:
+                        IOB code of named entity tag. `“B”` means the token begins an entity, `“I”` means it is
+                        inside an entity, `“O”` means it is outside an entity, and `""` means no entity tag is set.
+                    ent_type:
+                      type: string
+                      enum: *nerEnum
+                      description: *nerDesc
+                    head:
+                      type: string
+                      description: The syntactic parent, or “governor”, of this token.
+                    index:
+                      type: integer
+                      description: The index of the token within the parent document.
+                    is_alpha:
+                      type: boolean
+                      description: Does the token consist of alphabetic characters?
+                    is_ascii:
+                      type: boolean
+                      description: Does the token consist of ASCII characters?
+                    is_bracket:
+                      type: boolean
+                      description: Is the token a bracket?
+                    is_currency:
+                      type: boolean
+                      description: Is the token a currency symbol?
+                    is_digit:
+                      type: boolean
+                      description: Does the token consist of digits?
+                    is_left_punct:
+                      type: boolean
+                      description: Is the token a left punctuation mark (e.g. `(`)?
+                    is_oov:
+                      type: boolean
+                      description: Is the token out-of-vocabulary?
+                    is_punct:
+                      type: boolean
+                      description: Is the token punctuation?
+                    is_quote:
+                      type: boolean
+                      description: Is the token a quotation mark?
+                    is_right_punct:
+                      type: boolean
+                      description: Is the token a right punctuation mark (e.g. `)`)?
+                    is_space:
+                      type: boolean
+                      description: Does the token consist of whitespace characters?
+                    is_stop:
+                      type: boolean
+                      description: Is the token part of a “stop list”?
+                    is_title:
+                      type: boolean
+                      description: Is the token in titlecase?
+                    lang:
+                      type: string
+                      enum:
+                        - af
+                        - ar
+                        - bg
+                        - bn
+                        - ca
+                        - cs
+                        - da
+                        - de
+                        - el
+                        - en
+                        - es
+                        - et
+                        - fa
+                        - fi
+                        - fr
+                        - ga
+                        - he
+                        - hi
+                        - hr
+                        - hu
+                        - id
+                        - is
+                        - it
+                        - ja
+                        - kn
+                        - ko
+                        - lt
+                        - lv
+                        - mr
+                        - nb
+                        - nl
+                        - pl
+                        - pt
+                        - ro
+                        - ru
+                        - si
+                        - sk
+                        - sl
+                        - sq
+                        - sr
+                        - sv
+                        - ta
+                        - te
+                        - th
+                        - tl
+                        - tr
+                        - tt
+                        - uk
+                        - ur
+                        - vi
+                        - xx
+                        - zh
+                      description:
+                        The [ISO 639-1 code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) for the
+                        language of the parent document’s vocabulary.
+                    left_edge:
+                      type: string
+                      description: The leftmost token of this token’s syntactic descendants.
+                    lemma:
+                      type: string
+                      description: Base form of the token, with no inflectional suffixes.
+                    like_email:
+                      type: boolean
+                      description: Does the token resemble an email address?
+                    like_num:
+                      type: boolean
+                      description: Does the token represent a number (e.g. `10.9`, `10`, `"ten"`)?
+                    like_url:
+                      type: boolean
+                      description: Does the token resemble a URL?
+                    normalized:
+                      type: string
+                      description: The token’s norm (i.e., a normalized form of the token text).
+                    pos:
+                      type: string
+                      enum:
+                        - PUNCT
+                        - SYM
+                        - X
+                        - ADJ
+                        - VERB
+                        - CONJ
+                        - NUM
+                        - DET
+                        - ADV
+                        - ADP
+                        - NOUN
+                        - PROPN
+                        - PART
+                        - PRON
+                        - SPACE
+                        - INTJ
+                      description: &posDesc |
+                        The tag is the fine-grained part-of-speech.
+
+                        The pos is the coarse-grained part-of-speech.
+
+                        | Tag                                 |  POS    | Morphology                                     | Description                               |
+                        | ----------------------------------- | ------- | ---------------------------------------------- | ----------------------------------------- |
+                        | `-LRB-`                             | `PUNCT` | `PunctType=brck PunctSide=ini`                 | left round bracket                        |
+                        | `-RRB-`                             | `PUNCT` | `PunctType=brck PunctSide=fin`                 | right round bracket                       |
+                        | `,`                                 | `PUNCT` | `PunctType=comm`                               | punctuation mark, comma                   |
+                        | `:`                                 | `PUNCT` |                                                | punctuation mark, colon or ellipsis       |
+                        | `.`                                 | `PUNCT` | `PunctType=peri`                               | punctuation mark, sentence closer         |
+                        | `''`                                | `PUNCT` | `PunctType=quot PunctSide=fin`                 | closing quotation mark                    |
+                        | `""`                                | `PUNCT` | `PunctType=quot PunctSide=fin`                 | closing quotation mark                    |
+                        | <InlineCode>&#96;&#96;</InlineCode> | `PUNCT` | `PunctType=quot PunctSide=ini`                 | opening quotation mark                    |
+                        | `#`                                 | `SYM`   | `SymType=numbersign`                           | symbol, number sign                       |
+                        | `$`                                 | `SYM`   | `SymType=currency`                             | symbol, currency                          |
+                        | `ADD`                               | `X`     |                                                | email                                     |
+                        | `AFX`                               | `ADJ`   | `Hyph=yes`                                     | affix                                     |
+                        | `BES`                               | `VERB`  |                                                | auxiliary "be"                            |
+                        | `CC`                                | `CONJ`  | `ConjType=coor`                                | conjunction, coordinating                 |
+                        | `CD`                                | `NUM`   | `NumType=card`                                 | cardinal number                           |
+                        | `DT`                                | `DET`   |                                                | determiner                                |
+                        | `EX`                                | `ADV`   | `AdvType=ex`                                   | existential there                         |
+                        | `FW`                                | `X`     | `Foreign=yes`                                  | foreign word                              |
+                        | `GW`                                | `X`     |                                                | additional word in multi-word expression  |
+                        | `HVS`                               | `VERB`  |                                                | forms of "have"                           |
+                        | `HYPH`                              | `PUNCT` | `PunctType=dash`                               | punctuation mark, hyphen                  |
+                        | `IN`                                | `ADP`   |                                                | conjunction, subordinating or preposition |
+                        | `JJ`                                | `ADJ`   | `Degree=pos`                                   | adjective                                 |
+                        | `JJR`                               | `ADJ`   | `Degree=comp`                                  | adjective, comparative                    |
+                        | `JJS`                               | `ADJ`   | `Degree=sup`                                   | adjective, superlative                    |
+                        | `LS`                                | `PUNCT` | `NumType=ord`                                  | list item marker                          |
+                        | `MD`                                | `VERB`  | `VerbType=mod`                                 | verb, modal auxiliary                     |
+                        | `NFP`                               | `PUNCT` |                                                | superfluous punctuation                   |
+                        | `NIL`                               |         |                                                | missing tag                               |
+                        | `NN`                                | `NOUN`  | `Number=sing`                                  | noun, singular or mass                    |
+                        | `NNP`                               | `PROPN` | `NounType=prop Number=sign`                    | noun, proper singular                     |
+                        | `NNPS`                              | `PROPN` | `NounType=prop Number=plur`                    | noun, proper plural                       |
+                        | `NNS`                               | `NOUN`  | `Number=plur`                                  | noun, plural                              |
+                        | `PDT`                               | `ADJ`   | `AdjType=pdt PronType=prn`                     | predeterminer                             |
+                        | `POS`                               | `PART`  | `Poss=yes`                                     | possessive ending                         |
+                        | `PRP`                               | `PRON`  | `PronType=prs`                                 | pronoun, personal                         |
+                        | `PRP$`                              | `ADJ`   | `PronType=prs Poss=yes`                        | pronoun, possessive                       |
+                        | `RB`                                | `ADV`   | `Degree=pos`                                   | adverb                                    |
+                        | `RBR`                               | `ADV`   | `Degree=comp`                                  | adverb, comparative                       |
+                        | `RBS`                               | `ADV`   | `Degree=sup`                                   | adverb, superlative                       |
+                        | `RP`                                | `PART`  |                                                | adverb, particle                          |
+                        | `_SP`                               | `SPACE` |                                                | space                                     |
+                        | `SYM`                               | `SYM`   |                                                | symbol                                    |
+                        | `TO`                                | `PART`  | `PartType=inf VerbForm=inf`                    | infinitival "to"                          |
+                        | `UH`                                | `INTJ`  |                                                | interjection                              |
+                        | `VB`                                | `VERB`  | `VerbForm=inf`                                 | verb, base form                           |
+                        | `VBD`                               | `VERB`  | `VerbForm=fin Tense=past`                      | verb, past tense                          |
+                        | `VBG`                               | `VERB`  | `VerbForm=part Tense=pres Aspect=prog`         | verb, gerund or present participle        |
+                        | `VBN`                               | `VERB`  | `VerbForm=part Tense=past Aspect=perf`         | verb, past participle                     |
+                        | `VBP`                               | `VERB`  | `VerbForm=fin Tense=pres`                      | verb, non-3rd person singular present     |
+                        | `VBZ`                               | `VERB`  | `VerbForm=fin Tense=pres Number=sing Person=3` | verb, 3rd person singular present         |
+                        | `WDT`                               | `ADJ`   | `PronType=int|rel`                             | wh-determiner                             |
+                        | `WP`                                | `NOUN`  | `PronType=int|rel`                             | wh-pronoun, personal                      |
+                        | `WP$`                               | `ADJ`   | `Poss=yes PronType=int|rel`                    | wh-pronoun, possessive                    |
+                        | `WRB`                               | `ADV`   | `PronType=int|rel`                             | wh-adverb                                 |
+                        | `XX`                                | `X`     |                                                | unknown                                   |
+                    prefix:
+                      type: string
+                      description: A length-N substring from the start of the token. Defaults to `N=1`.
+                    prob:
+                      type: number
+                      description:
+                        Smoothed log probability estimate of token’s word type (context-independent entry in
+                        the vocabulary).
+                    right_edge:
+                      type: string
+                      description: The rightmost token of this token’s syntactic descendants.
+                    shape:
+                      type: string
+                      description:
+                        Transform of the tokens’s string, to show orthographic features (e.g., `“Xxxx”` or `“dd”`).
+                    suffix:
+                      type: string
+                      description: Length-N substring from the end of the token. Defaults to `N=3`.
+                    tag:
+                      type: string
+                      description: *posDesc
+                      enum:
+                        - -LRB-
+                        - -RRB-
+                        - ','
+                        - ':'
+                        - .
+                        - "''"
+                        - '""'
+                        - <InlineCode>&#96;&#96;</InlineCode>
+                        - '#'
+                        - $
+                        - ADD
+                        - AFX
+                        - BES
+                        - CC
+                        - CD
+                        - DT
+                        - EX
+                        - FW
+                        - GW
+                        - HVS
+                        - HYPH
+                        - IN
+                        - JJ
+                        - JJR
+                        - JJS
+                        - LS
+                        - MD
+                        - NFP
+                        - NIL
+                        - NN
+                        - NNP
+                        - NNPS
+                        - NNS
+                        - PDT
+                        - POS
+                        - PRP
+                        - PRP$
+                        - RB
+                        - RBR
+                        - RBS
+                        - RP
+                        - _SP
+                        - SYM
+                        - TO
+                        - UH
+                        - VB
+                        - VBD
+                        - VBG
+                        - VBN
+                        - VBP
+                        - VBZ
+                        - WDT
+                        - WP
+                        - WP$
+                        - WRB
+                        - XX
+                    text:
+                      type: string
+                      description: Verbatim text content.
+                    text_with_ws:
+                      type: string
+                      description: Text content, with trailing space character if present.
+                    whitespace:
+                      type: string
+                      enum:  [' ', '']
+                      description: Trailing space character if present.
+                  required:
+                    - text
+                    - text_with_ws
+                    - whitespace
+                    - head
+                    - left_edge
+                    - right_edge
+                    - index
+                    - ent_type
+                    - ent_iob
+                    - lemma
+                    - normalized
+                    - shape
+                    - prefix
+                    - suffix
+                    - is_alpha
+                    - is_ascii
+                    - is_digit
+                    - is_title
+                    - is_punct
+                    - is_left_punct
+                    - is_right_punct
+                    - is_space
+                    - is_bracket
+                    - is_quote
+                    - is_currency
+                    - like_url
+                    - like_num
+                    - like_email
+                    - is_oov
+                    - is_stop
+                    - pos
+                    - tag
+                    - dep
+                    - lang
+                    - prob
+                    - char_offset
+            required: [text, tags]
+      required: [data]
+    Tokens:
+      type: object
+      properties:
+        tokens:
+          type: array
+          items:
+            type: string
+      required: [tokens]
+    Sentences:
+      type: object
+      properties:
+        sentences:
+          type: array
+          items:
+            type: string
+      required: [sentences]
