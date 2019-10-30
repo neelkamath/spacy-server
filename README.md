@@ -2,7 +2,7 @@
 
 [![Built with spaCy](https://img.shields.io/badge/built%20with-spaCy-09a3d5.svg)](https://spacy.io)
 
-For developers who need named entity recognition, spaCy Server is an HTTP API that provides industrial-strength natural language processing. Unlike other servers, our product is fast, easy to use, and well documented.
+For developers who need programming language agnostic NLP, spaCy Server is a containerized HTTP API that provides industrial-strength natural language processing. Unlike other servers, our product is fast, idiomatic, and well documented.
 
 ## Installation
 
@@ -23,8 +23,6 @@ The container `EXPOSE`s port `8080`.
 ### Generating an SDK
 
 You can generate a wrapper for the HTTP API using [OpenAPI Generator](https://openapi-generator.tech/) on the file `https://raw.githubusercontent.com/neelkamath/spacy-server/master/docs/openapi.yaml`.
-
-For advanced use cases, please see the [OpenAPI Generator documentation](https://openapi-generator.tech/).
 
 ## [Usage](https://neelkamath.gitlab.io/spacy-server/)
 
