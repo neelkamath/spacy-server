@@ -15,8 +15,8 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
 servers:
-  - url: https://spacy-server.herokuapp.com
-    description: This is a temporary development server which may be offline or serving a different API in the future.
+  - url: http://localhost:8080
+    description: You'll have to set up the server yourself.
 paths:
   /ner:
     post:
