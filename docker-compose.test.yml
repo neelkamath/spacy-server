@@ -1,0 +1,4 @@
+version: '3.7'
+services:
+  app:
+    command: sh -c 'pip install -r requirements.txt && python test.py'

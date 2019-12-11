@@ -15,8 +15,8 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
 servers:
-  - url: https://spacy-server.herokuapp.com
-    description: This is a temporary development server which may be offline or serving a different API in the future.
+  - url: http://localhost:8080
+    description: You'll have to set up the server yourself.
 paths:
   /ner:
     post:
@@ -35,13 +35,13 @@ paths:
             schema:
               $ref: '#/components/schemas/Sections'
       responses:
-        200:
+        '200':
           description: Labeled text
           content:
             application/json:
               example:
                 data:
-                    - entities:
+                  - entities:
                       - end: 1
                         end_char: 6
                         label: ORG
@@ -58,7 +58,7 @@ paths:
                         start_char: 20
                         text: Sundar Pichai
                         text_with_ws: Sundar Pichai
-                      text: Google is headed by Sundar Pichai.
+                    text: Google is headed by Sundar Pichai.
               schema:
                 $ref: '#/components/schemas/NamedEntities'
   /pos:
@@ -83,7 +83,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Text'
       responses:
-        200:
+        '200':
           description: Annotated text
           content:
             application/json:
@@ -144,7 +144,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Text'
       responses:
-        200:
+        '200':
           description: Tokenized text
           content:
             application/json:
@@ -167,7 +167,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Text'
       responses:
-        200:
+        '200':
           description: Sentences
           content:
             application/json:
@@ -181,7 +181,7 @@ paths:
       description: Check if all systems are operational
       operationId: healthCheck
       responses:
-        204:
+        '204':
           description: All systems are operational
 components:
   schemas:

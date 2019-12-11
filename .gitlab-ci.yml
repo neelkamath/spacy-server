@@ -9,21 +9,13 @@ variables:
   # See https://github.com/docker-library/docker/pull/166
   DOCKER_TLS_CERTDIR: ""
 
-stages: [test, build, push, deploy]
+stages: [test, build, deploy]
 
 test-server:
   stage: test
-  image: python:3
-  script:
-    - pip install -r requirements.txt
-    - python test.py
-
-test-compatibility:
-  stage: test
-  image: python:3
-  script:
-    - pip install -r requirements.txt
-    - python -m spacy validate
+  image: docker/compose
+  script: docker-compose -f docker-compose.yml -f docker-compose.test.yml
+    up --build --abort-on-container-exit --exit-code-from app
 
 test-spec:
   stage: test
@@ -59,7 +51,7 @@ build-docs:
   only: [master]
 
 docker-hub:
-  stage: push
+  stage: deploy
   image: docker:dind
   script:
     - echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USER --password-stdin https://index.docker.io/v1/
@@ -69,30 +61,6 @@ docker-hub:
     - docker tag $CI_REGISTRY_IMAGE:$(cat version.txt) $DOCKER_HUB_USER/spacy-server:$(cat version.txt)
     - docker push $DOCKER_HUB_USER/spacy-server
     - docker push $DOCKER_HUB_USER/spacy-server:$(cat version.txt)
-  only: [master]
-
-heroku-push:
-  stage: push
-  image: docker:dind
-  script:
-    - echo $HEROKU_AUTH_TOKEN | docker login --username=_ --password-stdin registry.heroku.com
-    - docker pull $CI_REGISTRY_IMAGE
-    - docker tag $CI_REGISTRY_IMAGE registry.heroku.com/$HEROKU_APP/web
-    - docker push registry.heroku.com/$HEROKU_APP/web
-    - echo $(docker inspect registry.heroku.com/$HEROKU_APP/web --format='{{.Id}}') > image_id.txt
-  artifacts:
-    paths: [image_id.txt]
-  only: [master]
-
-heroku-release:
-  stage: deploy
-  image: appropriate/curl
-  script: >
-    curl -nX PATCH https://api.heroku.com/apps/"$HEROKU_APP"/formation \
-      -d '{"updates":[{"type":"web","docker_image":"'"$(cat image_id.txt)"'"}]}' \
-      -H 'Content-Type: application/json' \
-      -H 'Accept: application/vnd.heroku+json; version=3.docker-releases' \
-      -H "Authorization: Bearer $HEROKU_AUTH_TOKEN"
   only: [master]
 
 pages:

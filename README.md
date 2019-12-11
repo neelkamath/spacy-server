@@ -6,19 +6,13 @@ For developers who need programming language agnostic NLP, spaCy Server is a con
 
 ## Installation
 
-You can try out the HTTP API using the development server `https://spacy-server.herokuapp.com`. However, this server may be offline or serving a different API in the future. Hence, it's highly recommended to run your own instance.
-
-### Running Your Own Instance
+### Server
 
 Install [Docker](https://hub.docker.com/search/?type=edition&offering=community).
 
-To serve at `http://localhost:8080`, run `docker run --rm -p 8080:8080 neelkamath/spacy-server`. 
+The container `EXPOSE`s port `8080`. To serve at `http://localhost:8080`, run `docker run --rm -p 8080:8080 neelkamath/spacy-server`.
 
-You can change the port by setting the `PORT` environment variable (e.g., `docker run --rm -e PORT=6969 -p 6969:6969 neelkamath/spacy-server`).
-
-To run a particular version, run `docker run --rm -p 8080:8080 neelkamath/spacy-server:<TAG>`, where `<TAG>` is from `https://hub.docker.com/r/neelkamath/spacy-server/tags`.
-
-The container `EXPOSE`s port `8080`.
+You can find specific versions on the [Docker Hub repository](https://hub.docker.com/repository/docker/neelkamath/spacy-server/tags?page=1).
 
 ### Generating an SDK
 
