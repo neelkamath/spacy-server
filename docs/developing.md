@@ -30,27 +30,33 @@ The container `EXPOSE`s port `8080`. To serve at `http://localhost:8080`, run `d
 
 ### Testing
 
-`spectral lint docs/openapi.yaml`
+```
+spectral lint docs/openapi.yaml
+```
 
 ## Documentation
 
 ### Developing
 
-`redoc-cli serve docs/openapi.yaml -w`
+``` 
+redoc-cli serve docs/openapi.yaml -w
+```
 
-Open `http://localhost:8080` in your browser. 
+Open `http://127.0.0.1:8080` in your browser. 
 
 The documentation will automatically rebuild whenever you save a change to `docs/openapi.yaml`. Refresh the page whenever you want to view the updated documentation.
 
 ### Production
 
-`redoc-cli bundle docs/openapi.yaml -o redoc-static.html --title spaCy`
+``` 
+redoc-cli bundle docs/openapi.yaml -o redoc-static.html --title 'spaCy Server'
+```
 
 Open `redoc-static.html` in your browser.
 
 ## Releases
 
-- Create a GitHub release (this will automatically create the git tag). If you bumped the version in `docs/openapi.yaml`, then create a new release. If you haven't bumped the version but have updated the HTTP API's functionality, delete the existing GitHub release and git tag, and create a new one. Otherwise, skip this step. The GitHub release's body should be ```Download and open the release asset, `redoc-static.html`, in your browser to view the HTTP API documentation.```. Upload/update the asset named `redoc-static.html` which contains the HTTP API's documentation (generated using `redoc-cli bundle docs/openapi.yaml --title spaCy -o redoc-static.html`).
+- Create a GitHub release (this will automatically create the git tag). If you bumped the version in `docs/openapi.yaml`, then create a new release. If you haven't bumped the version but have updated the HTTP API's functionality, delete the existing GitHub release and git tag, and create a new one. Otherwise, skip this step. The GitHub release's body should be ```Download and open the release asset, `redoc-static.html`, in your browser to view the HTTP API documentation.```. Upload/update the asset named `redoc-static.html` which contains the HTTP API's documentation (generated using `redoc-cli bundle docs/openapi.yaml --title 'spaCy Server' -o redoc-static.html`).
 - If required, update the [Docker Hub repository](https://hub.docker.com/r/neelkamath/spacy-server)'s **Overview**.
 - For every commit to the `master` branch in which the tests have passed, the following will automatically be done.
     - The new images will be uploaded to Docker Hub.
