@@ -58,7 +58,7 @@ paths:
                         start_char: 20
                         text: Sundar Pichai
                         text_with_ws: Sundar Pichai
-                      text: Google is headed by Sundar Pichai.
+                    text: Google is headed by Sundar Pichai.
               schema:
                 $ref: '#/components/schemas/NamedEntities'
   /pos:
