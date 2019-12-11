@@ -7,6 +7,7 @@
           "end_char": 27,
           "label": "MONEY",
           "lemma": "$ 9.4 million",
+          "sense2vec": [],
           "start": 3,
           "start_char": 15,
           "text": "$9.4 million",
@@ -17,6 +18,48 @@
           "end_char": 54,
           "label": "DATE",
           "lemma": "the prior year",
+          "sense2vec": [
+            {
+              "phrase": "the previous year",
+              "similarity": 0.7810999751091003
+            },
+            {
+              "phrase": "that year",
+              "similarity": 0.7346000075340271
+            },
+            {
+              "phrase": "the year prior",
+              "similarity": 0.7343000173568726
+            },
+            {
+              "phrase": "the first year",
+              "similarity": 0.7110000252723694
+            },
+            {
+              "phrase": "previous year",
+              "similarity": 0.7109000086784363
+            },
+            {
+              "phrase": "the year before",
+              "similarity": 0.7056999802589417
+            },
+            {
+              "phrase": "the following year",
+              "similarity": 0.6967999935150146
+            },
+            {
+              "phrase": "prior years",
+              "similarity": 0.695900022983551
+            },
+            {
+              "phrase": "the next year",
+              "similarity": 0.6915000081062317
+            },
+            {
+              "phrase": "the entire year",
+              "similarity": 0.6915000081062317
+            }
+          ],
           "start": 8,
           "start_char": 40,
           "text": "the prior year",
@@ -27,6 +70,48 @@
           "end_char": 70,
           "label": "MONEY",
           "lemma": "$ 2.7 million",
+          "sense2vec": [
+            {
+              "phrase": "$1 million",
+              "similarity": 0.7616000175476074
+            },
+            {
+              "phrase": "$2.4 million",
+              "similarity": 0.7502999901771545
+            },
+            {
+              "phrase": "$1.5 million",
+              "similarity": 0.7490000128746033
+            },
+            {
+              "phrase": "$5 million",
+              "similarity": 0.7437999844551086
+            },
+            {
+              "phrase": "$3 million",
+              "similarity": 0.741599977016449
+            },
+            {
+              "phrase": "more than $50,000",
+              "similarity": 0.739799976348877
+            },
+            {
+              "phrase": "$1.4 million",
+              "similarity": 0.7390999794006348
+            },
+            {
+              "phrase": "750,000",
+              "similarity": 0.7386000156402588
+            },
+            {
+              "phrase": "480,000",
+              "similarity": 0.7379999756813049
+            },
+            {
+              "phrase": "$2 million",
+              "similarity": 0.7371000051498413
+            }
+          ],
           "start": 12,
           "start_char": 58,
           "text": "$2.7 million",
@@ -42,6 +127,48 @@
           "end_char": 78,
           "label": "ORG",
           "lemma": "Google",
+          "sense2vec": [
+            {
+              "phrase": " Google",
+              "similarity": 0.8996000289916992
+            },
+            {
+              "phrase": "search engine",
+              "similarity": 0.8485999703407288
+            },
+            {
+              "phrase": "Bing",
+              "similarity": 0.8435999751091003
+            },
+            {
+              "phrase": "even Google",
+              "similarity": 0.840399980545044
+            },
+            {
+              "phrase": "google",
+              "similarity": 0.8317999839782715
+            },
+            {
+              "phrase": "Google Search",
+              "similarity": 0.8291000127792358
+            },
+            {
+              "phrase": "Googles",
+              "similarity": 0.8234000205993652
+            },
+            {
+              "phrase": "&gt;Google",
+              "similarity": 0.8137999773025513
+            },
+            {
+              "phrase": "DuckDuckGo",
+              "similarity": 0.8126999735832214
+            },
+            {
+              "phrase": "Yahoo",
+              "similarity": 0.8037999868392944
+            }
+          ],
           "start": 16,
           "start_char": 72,
           "text": "Google",
@@ -57,6 +184,7 @@
           "end_char": 39,
           "label": "MONEY",
           "lemma": "twelve billion dollar",
+          "sense2vec": [],
           "start": 2,
           "start_char": 17,
           "text": "twelve billion dollars",
@@ -67,6 +195,48 @@
           "end_char": 59,
           "label": "MONEY",
           "lemma": "1b",
+          "sense2vec": [
+            {
+              "phrase": "100m",
+              "similarity": 0.878000020980835
+            },
+            {
+              "phrase": "1B",
+              "similarity": 0.8756999969482422
+            },
+            {
+              "phrase": "100M",
+              "similarity": 0.8744999766349792
+            },
+            {
+              "phrase": "200M",
+              "similarity": 0.8553000092506409
+            },
+            {
+              "phrase": "$100 million",
+              "similarity": 0.8299000263214111
+            },
+            {
+              "phrase": "50M",
+              "similarity": 0.8292999863624573
+            },
+            {
+              "phrase": "$50 million",
+              "similarity": 0.8273000121116638
+            },
+            {
+              "phrase": "70m",
+              "similarity": 0.8263000249862671
+            },
+            {
+              "phrase": "300m",
+              "similarity": 0.8253999948501587
+            },
+            {
+              "phrase": "100B",
+              "similarity": 0.8209999799728394
+            }
+          ],
           "start": 11,
           "start_char": 57,
           "text": "1b",

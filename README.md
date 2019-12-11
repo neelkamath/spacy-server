@@ -2,7 +2,7 @@
 
 [![Built with spaCy](https://img.shields.io/badge/built%20with-spaCy-09a3d5.svg)](https://spacy.io)
 
-For developers who need programming language agnostic NLP, spaCy Server is a containerized HTTP API that provides industrial-strength natural language processing. Unlike other servers, our product is fast, idiomatic, and well documented.
+This project provides industrial-strength NLP via [spaCy](https://spacy.io/) and [sense2vec](https://github.com/explosion/sense2vec) over a containerized HTTP API.
 
 ## Installation
 
