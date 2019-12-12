@@ -1,19 +1,26 @@
 """Provides spaCy NLP over an HTTP API."""
 
+import typing
+
 import en_core_web_sm
-import flask
-from sense2vec import Sense2VecComponent
+import fastapi
+import pydantic
+import sense2vec
+import starlette.status
 
-app = flask.Flask(__name__)
+app = fastapi.FastAPI()
 nlp = en_core_web_sm.load()
-nlp.add_pipe(Sense2VecComponent(nlp.vocab).from_disk("s2v_old"))
+nlp.add_pipe(sense2vec.Sense2VecComponent(nlp.vocab).from_disk("s2v_old"))
 
 
-@app.route('/ner', methods=['POST'])
-def recognize_named_entities():
+class SectionsModel(pydantic.BaseModel):
+    sections: typing.List[str]
+
+
+@app.post('/ner')
+async def recognize_named_entities(request: SectionsModel):
     response = {'data': []}
-    sections = flask.request.get_json()['sections']
-    for doc in nlp.pipe(sections, disable=['tagger']):
+    for doc in nlp.pipe(request.sections, disable=['tagger']):
         for sent in doc.sents:
             entities = [build_entity(ent) for ent in sent.ents]
             data = {'text': sent.text, 'entities': entities}
@@ -41,11 +48,14 @@ def build_entity(ent):
     }
 
 
-@app.route('/pos', methods=['POST'])
-def tag_parts_of_speech():
+class TextModel(pydantic.BaseModel):
+    text: str
+
+
+@app.post('/pos')
+async def tag_parts_of_speech(request: TextModel):
     data = []
-    doc = nlp(flask.request.get_json()['text'])
-    for token in [build_token(token) for token in doc]:
+    for token in [build_token(token) for token in nlp(request.text)]:
         text = token['sent']
         del token['sent']
         if text in [obj['text'] for obj in data]:
@@ -100,20 +110,18 @@ def build_token(token):
     }
 
 
-@app.route('/tokenizer', methods=['POST'])
-def tokenize():
-    text = flask.request.get_json()['text']
-    doc = nlp(text, disable=['tagger', 'parser', 'ner'])
+@app.post('/tokenizer')
+async def tokenize(request: TextModel):
+    doc = nlp(request.text, disable=['tagger', 'parser', 'ner'])
     return {'tokens': [token.text for token in doc]}
 
 
-@app.route('/sentencizer', methods=['POST'])
-def sentencize():
-    text = flask.request.get_json()['text']
-    doc = nlp(text, disable=['tagger', 'ner'])
+@app.post('/sentencizer')
+async def sentencize(request: TextModel):
+    doc = nlp(request.text, disable=['tagger', 'ner'])
     return {'sentences': [sent.text for sent in doc.sents]}
 
 
-@app.route('/health_check')
-def check_health():
-    return flask.Response(status=204)
+@app.get('/health_check', status_code=starlette.status.HTTP_204_NO_CONTENT)
+async def check_health():
+    pass
