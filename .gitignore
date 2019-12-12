@@ -1,3 +1,5 @@
 s2v_old/
 .idea/
 redoc-static.html
+.pytest_cache/
+venv/

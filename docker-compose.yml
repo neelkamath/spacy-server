@@ -1,3 +1,6 @@
+# It is not possible to use a Docker volume to cache the dependencies because subsequent usage of the volume
+# occasionally gets corrupted for an unknown reason. Hence, a virtual environment is to be used instead. It is known
+# that virtual environments aren't needed in Docker because isolation is already provided; we use it as a cache instead.
 version: '3.7'
 services:
   app:
@@ -7,8 +10,3 @@ services:
       - type: bind
         source: .
         target: /app
-      - type: volume
-        source: cache
-        target: /usr/local/lib/python3.7/site-packages
-volumes:
-  cache:

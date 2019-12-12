@@ -1,8 +1,11 @@
 FROM python:3.7
 WORKDIR /app
-COPY . .
+ENV PYTHONUNBUFFERED 1
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 8080
+COPY main.py .
+COPY s2v_old/ s2v_old/
+EXPOSE 8000
 HEALTHCHECK --timeout=2s --start-period=2s --retries=1 \
-    CMD curl -f http://localhost:8080/health_check
-CMD ["sh", "-c", "waitress-serve --port 8080 app:app"]
+    CMD curl -f http://localhost:8000/health_check
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
