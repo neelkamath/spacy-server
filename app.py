@@ -2,9 +2,11 @@
 
 import en_core_web_sm
 import flask
+from sense2vec import Sense2VecComponent
 
 app = flask.Flask(__name__)
 nlp = en_core_web_sm.load()
+nlp.add_pipe(Sense2VecComponent(nlp.vocab).from_disk("s2v_old"))
 
 
 @app.route('/ner', methods=['POST'])
@@ -20,6 +22,12 @@ def recognize_named_entities():
 
 
 def build_entity(ent):
+    similar = []
+    if ent._.in_s2v:
+        for data in ent._.s2v_most_similar():
+            similar.append(
+                {'phrase': data[0][0], 'similarity': float(data[1])}
+            )
     return {
         'text': ent.text,
         'label': ent.label_,
@@ -29,6 +37,7 @@ def build_entity(ent):
         'start': ent.start,
         'end': ent.end,
         'text_with_ws': ent.text_with_ws,
+        'sense2vec': similar,
     }
 
 

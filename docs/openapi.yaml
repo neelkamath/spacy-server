@@ -3,10 +3,9 @@ info:
   title: spaCy
   version: '1'
   description:
-    This HTTP API provides access to spaCy's NLP for English.
+    This HTTP API provides industrial-strength English NLP via spaCy and sense2vec.
 
-    You can view the documentation for previous versions
-    [here](https://github.com/neelkamath/spacy-server/releases).
+    You can view the documentation for previous versions [here](https://github.com/neelkamath/spacy-server/releases).
   contact:
     name: Neel Kamath
     email: neelkamath@icloud.com
@@ -21,7 +20,8 @@ paths:
   /ner:
     post:
       tags: [nlp]
-      description: Named entity recognition
+      description: Named entity recognition, and similar phrases for each entity (via
+        [sense2vec](https://github.com/explosion/sense2vec))
       operationId: ner
       requestBody:
         required: true
@@ -36,7 +36,7 @@ paths:
               $ref: '#/components/schemas/Sections'
       responses:
         '200':
-          description: Labeled text
+          description: Labeled text, with phrases similar to each entity
           content:
             application/json:
               example:
@@ -46,6 +46,13 @@ paths:
                         end_char: 6
                         label: ORG
                         lemma: Google
+                        sense2vec:
+                          - phrase: ' Google'
+                            similarity: 0.8996000289916992
+                          - phrase: search engine
+                            similarity: 0.8485999703407288
+                          - phrase: DuckDuckGo
+                            similarity: 0.8126999735832214
                         start: 0
                         start_char: 0
                         text: Google
@@ -54,6 +61,7 @@ paths:
                         end_char: 33
                         label: PERSON
                         lemma: Sundar Pichai
+                        sense2vec: []
                         start: 4
                         start_char: 20
                         text: Sundar Pichai
@@ -280,6 +288,18 @@ components:
                     lemma:
                       type: string
                       description: The entity’s lemma.
+                    sense2vec:
+                      type: array
+                      description: Phrases similar to the entity
+                      items:
+                        type: object
+                        properties:
+                          phrase:
+                            type: string
+                          similarity:
+                            type: number
+                            description: Similarity in the range of 0-1
+                        required: [phrase, similarity]
                     start:
                       type: integer
                       description: The token offset for the start of the entity.
@@ -291,7 +311,7 @@ components:
                       description:
                         The text content of the entity with a trailing whitespace character if the last token
                         has one.
-                  required: [start, end, text, text_with_ws, start_char, end_char, lemma, label]
+                  required: [start, end, text, text_with_ws, start_char, end_char, lemma, sense2vec, label]
               text:
                 type: string
             required: [entities, text]
