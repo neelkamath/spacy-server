@@ -1,3 +1,7 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ''
+
 stages: [download, test, build, deploy]
 
 download-vectors:
