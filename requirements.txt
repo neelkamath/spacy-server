@@ -1,6 +1,7 @@
-spacy>=2.2.3,<3
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.2.5/en_core_web_sm-2.2.5.tar.gz#egg=en_core_web_sm
-sense2vec>=1.0.2,<2
+# We must specify a particular version for spaCy and sense2vec because pretrained models are only compatible with
+# particular versions.
+spacy==2.2.3
+sense2vec==1.0.2
 fastapi==0.45.0
 uvicorn==0.10.8
 pytest>=4.6.7,<5

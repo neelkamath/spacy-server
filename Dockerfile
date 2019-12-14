@@ -3,6 +3,8 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED 1
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+ARG SPACY_MODEL
+RUN python -m spacy download $SPACY_MODEL
 COPY main.py .
 COPY s2v_old/ s2v_old/
 EXPOSE 8000

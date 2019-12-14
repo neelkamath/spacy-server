@@ -1,27 +1,33 @@
 openapi: 3.0.2
 info:
-  title: spaCy
+  title: spaCy Server
   version: '1'
-  description:
-    This HTTP API provides industrial-strength English NLP via spaCy and sense2vec.
+  description: |
+    Industrial-strength NLP via [spaCy](https://spacy.io) and [sense2vec](https://github.com/explosion/sense2vec). No
+    knowledge of spaCy or sense2vec is required to use this service.
+
+    You can use any spaCy-compatible model with this service. Different models offer different labels. In certain parts
+    of the docs, you will be asked to refer to your choice of model's "label scheme". The label scheme can be found at
+    https://spacy.io/models (e.g., https://spacy.io/models/en#en_core_web_sm-labels is the label scheme for the
+    `en_core_web_sm` model).
 
     You can view the documentation for previous versions [here](https://github.com/neelkamath/spacy-server/releases).
   contact:
     name: Neel Kamath
-    email: neelkamath@icloud.com
+    email: neelkamathonline@gmail.com
     url: https://github.com/neelkamath/spacy-server
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
 servers:
-  - url: http://localhost:8080
-    description: You'll have to set up the server yourself.
+  - url: http://localhost:8000
+    description: You'll have to [run the server](https://github.com/neelkamath/spacy-server#installation) yourself.
 paths:
   /ner:
     post:
       tags: [nlp]
-      description: Named entity recognition, and similar phrases for each entity (via
-        [sense2vec](https://github.com/explosion/sense2vec))
+      description: Named entity recognition. Similar phrases will also be provided via sense2vec. The pretrained model
+        must have the `ner` and `parser` pipeline components to use this endpoint.
       operationId: ner
       requestBody:
         required: true
@@ -69,10 +75,19 @@ paths:
                     text: Google is headed by Sundar Pichai.
               schema:
                 $ref: '#/components/schemas/NamedEntities'
+        '400':
+          description: The pretrained model lacks the `ner` or `parser` pipeline components.
+          content:
+            application/json:
+              example:
+                detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support named entity recognition.
+              schema:
+                $ref: '#/components/schemas/InvalidModel'
   /pos:
     post:
       tags: [nlp]
-      description: Part-of-speech tagging
+      description: Part-of-speech tagging. The pretrained model needs the `parser`, `ner`, and `tagger` pipeline
+        components for this endpoint to be usable.
       operationId: pos
       requestBody:
         required: true
@@ -137,6 +152,14 @@ paths:
                         whitespace: ' '
               schema:
                 $ref: '#/components/schemas/PartsOfSpeech'
+        '400':
+          description: The pretrained model lacks the `ner`, `parser`, or `tagger` pipeline components.
+          content:
+            application/json:
+              example:
+                detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support part-of-speech tagging.
+              schema:
+                $ref: '#/components/schemas/InvalidModel'
   /tokenizer:
     post:
       tags: [nlp]
@@ -163,7 +186,8 @@ paths:
   /sentencizer:
     post:
       tags: [nlp]
-      description: Sentence segmentation
+      description: Sentence segmentation. The pretrained model must have the `parser` pipeline component for this
+        endpoint to be available.
       operationId: sentencizer
       requestBody:
         required: true
@@ -183,6 +207,14 @@ paths:
                 sentences: [Apple is looking at buying U.K. startup for $1 billion., Another sentence.]
               schema:
                 $ref: '#/components/schemas/Sentences'
+        '400':
+          description: The pretrained model lacks the `parser` pipeline component.
+          content:
+            application/json:
+              example:
+                detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support sentence segmentation.
+              schema:
+                $ref: '#/components/schemas/InvalidModel'
   /health_check:
     get:
       tags: [status]
@@ -222,63 +254,9 @@ components:
                       description: A unicode representation of the entity text.
                     label:
                       description: &nerDesc |
-                        The entity type.
-
-                        `"PERSON"`: People, including fictional.
-
-                        `"NORP"`: Nationalities or religious or political groups.
-
-                        `"FAC"`: Buildings, airports, highways, bridges, etc.
-
-                        `"ORG"`: Companies, agencies, institutions, etc.
-
-                        `"GPE"`: Countries, cities, states.
-
-                        `"LOC"`: Non-GPE locations, mountain ranges, bodies of water.
-
-                        `"PRODUCT"`: Objects, vehicles, foods, etc. (Not services.)
-
-                        `"EVENT"`: Named hurricanes, battles, wars, sports events, etc.
-
-                        `"WORK_OF_ART"`: Titles of books, songs, etc.
-
-                        `"LAW"`: Named documents made into laws.
-
-                        `"LANGUAGE"`: Any named language.
-
-                        `"DATE"`: Absolute or relative dates or periods.
-
-                        `"TIME"`: Times smaller than a day.
-
-                        `"PERCENT"`: Percentage, including ”%“.
-
-                        `"MONEY"`: Monetary values, including unit.
-
-                        `"QUANTITY"`: Measurements, as of weight or distance.
-
-                        `"ORDINAL"`: “first”, “second”, etc.
-
-                        `"CARDINAL"`: Numerals that do not fall under another type.
+                        The named entity label. The model's label scheme lists which are supported. An explanation of
+                        the different labels can be found [here](https://spacy.io/api/annotation#named-entities).
                       type: string
-                      enum: &nerEnum
-                        - PERSON
-                        - NORP
-                        - FAC
-                        - ORG
-                        - GPE
-                        - LOC
-                        - PRODUCT
-                        - EVENT
-                        - WORK_OF_ART
-                        - LAW
-                        - LANGUAGE
-                        - DATE
-                        - TIME
-                        - PERCENT
-                        - MONEY
-                        - QUANTITY
-                        - ORDINAL
-                        - CARDINAL
                     start_char:
                       type: integer
                       description: The character offset for the start of the entity.
@@ -343,153 +321,9 @@ components:
                       description: The character offset of the token within the parent document.
                     dep:
                       type: string
-                      enum:
-                        - acl
-                        - acomp
-                        - advcl
-                        - advmod
-                        - agent
-                        - amod
-                        - appos
-                        - attr
-                        - aux
-                        - auxpass
-                        - case
-                        - cc
-                        - ccomp
-                        - compound
-                        - conj
-                        - cop
-                        - csubj
-                        - csubjpass
-                        - dative
-                        - dep
-                        - det
-                        - dobj
-                        - expl
-                        - intj
-                        - mark
-                        - meta
-                        - neg
-                        - nn
-                        - nounmod
-                        - npmod
-                        - nsubj
-                        - nsubjpass
-                        - nummod
-                        - oprd
-                        - obj
-                        - obl
-                        - parataxis
-                        - pcomp
-                        - pobj
-                        - poss
-                        - preconj
-                        - prep
-                        - prt
-                        - punct
-                        - quantmod
-                        - relcl
-                        - root
-                        - xcomp
-                      description: |
-                        Syntactic dependency relation.
-
-                        `"acl"`: clausal modifier of noun (adjectival clause)
-
-                        `"acomp"`: adjectival complement
-
-                        `"advcl"`: adverbial clause modifier
-
-                        `"advmod"`: adverbial modifier
-
-                        `"agent"`: agent
-
-                        `"amod"`: adjectival modifier
-
-                        `"appos"`: appositional modifier
-
-                        `"attr"`: attribute
-
-                        `"aux"`: auxiliary
-
-                        `"auxpass"`: auxiliary (passive)
-
-                        `"case"`: case marking
-
-                        `"cc"`: coordinating conjunction
-
-                        `"ccomp"`: clausal complement
-
-                        `"compound"`: compound
-
-                        `"conj"`: conjunct
-
-                        `"cop"`: copula
-
-                        `"csubj"`: clausal subject
-
-                        `"csubjpass"`: clausal subject (passive)
-
-                        `"dative"`: dative
-
-                        `"dep"`: unclassified dependent
-
-                        `"det"`: determiner
-
-                        `"dobj"`: direct object
-
-                        `"expl"`: expletive
-
-                        `"intj"`: interjection
-
-                        `"mark"`: marker
-
-                        `"meta"`: meta modifier
-
-                        `"neg"`: negation modifier
-
-                        `"nn"`: noun compound modifier
-
-                        `"nounmod"`: modifier of nominal
-
-                        `"npmod"`: noun phrase as adverbial modifier
-
-                        `"nsubj"`: nominal subject
-
-                        `"nsubjpass"`: nominal subject (passive)
-
-                        `"nummod"`: numeric modifier
-
-                        `"oprd"`: object predicate
-
-                        `"obj"`: object
-
-                        `"obl"`: oblique nominal
-
-                        `"parataxis"`: parataxis
-
-                        `"pcomp"`: complement of preposition
-
-                        `"pobj"`: object of preposition
-
-                        `"poss"`: possession modifier
-
-                        `"preconj"`: pre-correlative conjunction
-
-                        `"prep"`: prepositional modifier
-
-                        `"prt"`: particle
-
-                        `"punct"`: punctuation
-
-                        `"quantmod"`: modifier of quantifier
-
-                        `"relcl"`: relative clause modifier
-
-                        `"root"`: root
-
-                        `"xcomp"`: open clausal complement
+                      description: The dependency label. The model's label scheme lists which are supported. An
+                        explanation of the different labels can be found
+                        [here](https://spacy.io/api/annotation#dependency-parsing).
                     ent_iob:
                       type: string
                       enum: [B, I, O, '']
@@ -498,7 +332,6 @@ components:
                         inside an entity, `“O”` means it is outside an entity, and `""` means no entity tag is set.
                     ent_type:
                       type: string
-                      enum: *nerEnum
                       description: *nerDesc
                     head:
                       type: string
@@ -623,86 +456,7 @@ components:
                       description: The token’s norm (i.e., a normalized form of the token text).
                     pos:
                       type: string
-                      enum:
-                        - PUNCT
-                        - SYM
-                        - X
-                        - ADJ
-                        - VERB
-                        - CONJ
-                        - NUM
-                        - DET
-                        - ADV
-                        - ADP
-                        - NOUN
-                        - PROPN
-                        - PART
-                        - PRON
-                        - SPACE
-                        - INTJ
-                      description: &posDesc |
-                        The tag is the fine-grained part-of-speech.
-
-                        The pos is the coarse-grained part-of-speech.
-
-                        | Tag                                 |  POS    | Morphology                                     | Description                               |
-                        | ----------------------------------- | ------- | ---------------------------------------------- | ----------------------------------------- |
-                        | `-LRB-`                             | `PUNCT` | `PunctType=brck PunctSide=ini`                 | left round bracket                        |
-                        | `-RRB-`                             | `PUNCT` | `PunctType=brck PunctSide=fin`                 | right round bracket                       |
-                        | `,`                                 | `PUNCT` | `PunctType=comm`                               | punctuation mark, comma                   |
-                        | `:`                                 | `PUNCT` |                                                | punctuation mark, colon or ellipsis       |
-                        | `.`                                 | `PUNCT` | `PunctType=peri`                               | punctuation mark, sentence closer         |
-                        | `''`                                | `PUNCT` | `PunctType=quot PunctSide=fin`                 | closing quotation mark                    |
-                        | `""`                                | `PUNCT` | `PunctType=quot PunctSide=fin`                 | closing quotation mark                    |
-                        | <InlineCode>&#96;&#96;</InlineCode> | `PUNCT` | `PunctType=quot PunctSide=ini`                 | opening quotation mark                    |
-                        | `#`                                 | `SYM`   | `SymType=numbersign`                           | symbol, number sign                       |
-                        | `$`                                 | `SYM`   | `SymType=currency`                             | symbol, currency                          |
-                        | `ADD`                               | `X`     |                                                | email                                     |
-                        | `AFX`                               | `ADJ`   | `Hyph=yes`                                     | affix                                     |
-                        | `BES`                               | `VERB`  |                                                | auxiliary "be"                            |
-                        | `CC`                                | `CONJ`  | `ConjType=coor`                                | conjunction, coordinating                 |
-                        | `CD`                                | `NUM`   | `NumType=card`                                 | cardinal number                           |
-                        | `DT`                                | `DET`   |                                                | determiner                                |
-                        | `EX`                                | `ADV`   | `AdvType=ex`                                   | existential there                         |
-                        | `FW`                                | `X`     | `Foreign=yes`                                  | foreign word                              |
-                        | `GW`                                | `X`     |                                                | additional word in multi-word expression  |
-                        | `HVS`                               | `VERB`  |                                                | forms of "have"                           |
-                        | `HYPH`                              | `PUNCT` | `PunctType=dash`                               | punctuation mark, hyphen                  |
-                        | `IN`                                | `ADP`   |                                                | conjunction, subordinating or preposition |
-                        | `JJ`                                | `ADJ`   | `Degree=pos`                                   | adjective                                 |
-                        | `JJR`                               | `ADJ`   | `Degree=comp`                                  | adjective, comparative                    |
-                        | `JJS`                               | `ADJ`   | `Degree=sup`                                   | adjective, superlative                    |
-                        | `LS`                                | `PUNCT` | `NumType=ord`                                  | list item marker                          |
-                        | `MD`                                | `VERB`  | `VerbType=mod`                                 | verb, modal auxiliary                     |
-                        | `NFP`                               | `PUNCT` |                                                | superfluous punctuation                   |
-                        | `NIL`                               |         |                                                | missing tag                               |
-                        | `NN`                                | `NOUN`  | `Number=sing`                                  | noun, singular or mass                    |
-                        | `NNP`                               | `PROPN` | `NounType=prop Number=sign`                    | noun, proper singular                     |
-                        | `NNPS`                              | `PROPN` | `NounType=prop Number=plur`                    | noun, proper plural                       |
-                        | `NNS`                               | `NOUN`  | `Number=plur`                                  | noun, plural                              |
-                        | `PDT`                               | `ADJ`   | `AdjType=pdt PronType=prn`                     | predeterminer                             |
-                        | `POS`                               | `PART`  | `Poss=yes`                                     | possessive ending                         |
-                        | `PRP`                               | `PRON`  | `PronType=prs`                                 | pronoun, personal                         |
-                        | `PRP$`                              | `ADJ`   | `PronType=prs Poss=yes`                        | pronoun, possessive                       |
-                        | `RB`                                | `ADV`   | `Degree=pos`                                   | adverb                                    |
-                        | `RBR`                               | `ADV`   | `Degree=comp`                                  | adverb, comparative                       |
-                        | `RBS`                               | `ADV`   | `Degree=sup`                                   | adverb, superlative                       |
-                        | `RP`                                | `PART`  |                                                | adverb, particle                          |
-                        | `_SP`                               | `SPACE` |                                                | space                                     |
-                        | `SYM`                               | `SYM`   |                                                | symbol                                    |
-                        | `TO`                                | `PART`  | `PartType=inf VerbForm=inf`                    | infinitival "to"                          |
-                        | `UH`                                | `INTJ`  |                                                | interjection                              |
-                        | `VB`                                | `VERB`  | `VerbForm=inf`                                 | verb, base form                           |
-                        | `VBD`                               | `VERB`  | `VerbForm=fin Tense=past`                      | verb, past tense                          |
-                        | `VBG`                               | `VERB`  | `VerbForm=part Tense=pres Aspect=prog`         | verb, gerund or present participle        |
-                        | `VBN`                               | `VERB`  | `VerbForm=part Tense=past Aspect=perf`         | verb, past participle                     |
-                        | `VBP`                               | `VERB`  | `VerbForm=fin Tense=pres`                      | verb, non-3rd person singular present     |
-                        | `VBZ`                               | `VERB`  | `VerbForm=fin Tense=pres Number=sing Person=3` | verb, 3rd person singular present         |
-                        | `WDT`                               | `ADJ`   | `PronType=int|rel`                             | wh-determiner                             |
-                        | `WP`                                | `NOUN`  | `PronType=int|rel`                             | wh-pronoun, personal                      |
-                        | `WP$`                               | `ADJ`   | `Poss=yes PronType=int|rel`                    | wh-pronoun, possessive                    |
-                        | `WRB`                               | `ADV`   | `PronType=int|rel`                             | wh-adverb                                 |
-                        | `XX`                                | `X`     |                                                | unknown                                   |
+                      description: Part-of-speech tags for the model
                     prefix:
                       type: string
                       description: A length-N substring from the start of the token. Defaults to `N=1`.
@@ -716,71 +470,14 @@ components:
                       description: The rightmost token of this token’s syntactic descendants.
                     shape:
                       type: string
-                      description:
-                        Transform of the tokens’s string, to show orthographic features (e.g., `“Xxxx”` or `“dd”`).
+                      description: Transform of the tokens’s string, to show orthographic features (e.g., `“Xxxx”` or
+                        `“dd”`).
                     suffix:
                       type: string
                       description: Length-N substring from the end of the token. Defaults to `N=3`.
                     tag:
                       type: string
-                      description: *posDesc
-                      enum:
-                        - -LRB-
-                        - -RRB-
-                        - ','
-                        - ':'
-                        - .
-                        - "''"
-                        - '""'
-                        - <InlineCode>&#96;&#96;</InlineCode>
-                        - '#'
-                        - $
-                        - ADD
-                        - AFX
-                        - BES
-                        - CC
-                        - CD
-                        - DT
-                        - EX
-                        - FW
-                        - GW
-                        - HVS
-                        - HYPH
-                        - IN
-                        - JJ
-                        - JJR
-                        - JJS
-                        - LS
-                        - MD
-                        - NFP
-                        - NIL
-                        - NN
-                        - NNP
-                        - NNPS
-                        - NNS
-                        - PDT
-                        - POS
-                        - PRP
-                        - PRP$
-                        - RB
-                        - RBR
-                        - RBS
-                        - RP
-                        - _SP
-                        - SYM
-                        - TO
-                        - UH
-                        - VB
-                        - VBD
-                        - VBG
-                        - VBN
-                        - VBP
-                        - VBZ
-                        - WDT
-                        - WP
-                        - WP$
-                        - WRB
-                        - XX
+                      description: Part-of-speech tags from the model's label scheme
                     text:
                       type: string
                       description: Verbatim text content.
@@ -846,3 +543,9 @@ components:
           items:
             type: string
       required: [sentences]
+    InvalidModel:
+      type: object
+      properties:
+        detail:
+          type: string
+      required: [detail]
