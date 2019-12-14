@@ -2,13 +2,8 @@ en_core_web_sm
 en_core_web_md
 en_core_web_lg
 en_vectors_web_lg
-en_trf_bertbaseuncased_lg
-en_trf_robertabase_lg
-en_trf_distilbertbaseuncased_lg
-en_trf_xlnetbasecased_lg
 de_core_news_sm
 de_core_news_md
-de_trf_bertbasecased_lg
 fr_core_news_sm
 fr_core_news_md
 es_core_news_sm
