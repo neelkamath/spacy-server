@@ -12,6 +12,8 @@ echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER" --password-stdi
 
 # Build and upload the images.
 while IFS='' read -r model || [ -n "$model" ]; do
-  docker build --build-arg SPACY_MODEL="$model" -t "$DOCKER_HUB_USER"/spacy-server:"$version"-"$model" .
-  docker push "$DOCKER_HUB_USER"/spacy-server:"$version"-"$model"
+  tag="$DOCKER_HUB_USER"/spacy-server:"$version"-"$model"
+  docker build --build-arg SPACY_MODEL="$model" -t "$tag" .
+  docker push "$tag"
+  docker rmi "$tag" # Delete the image to prevent the device (e.g., CI runner) from running out of space and crashing.
 done <scripts/models.txt
