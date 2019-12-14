@@ -3,3 +3,4 @@ s2v_old/
 redoc-static.html
 .pytest_cache/
 venv/
+__pycache__/
