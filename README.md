@@ -10,7 +10,7 @@ This project provides industrial-strength NLP via [spaCy](https://spacy.io/) and
 
 Install [Docker](https://hub.docker.com/search/?type=edition&offering=community).
 
-The container `EXPOSE`s port `8080`. To serve at `http://localhost:8080`, run `docker run --rm -p 8080:8080 neelkamath/spacy-server`.
+The container `EXPOSE`s port `8000`. To serve at `http://localhost:8000`, run `docker run --rm -p 8000:8000 neelkamath/spacy-server`.
 
 You can find specific versions on the [Docker Hub repository](https://hub.docker.com/repository/docker/neelkamath/spacy-server/tags?page=1).
 

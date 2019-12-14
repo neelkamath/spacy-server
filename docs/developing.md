@@ -5,7 +5,7 @@
 ### Development
 
 ```
-docker-compose up --build
+docker-compose -p dev up --build
 ```
 
 The server will be running on `http://localhost:8000`, and has automatic reload enabled.
@@ -13,7 +13,8 @@ The server will be running on `http://localhost:8000`, and has automatic reload 
 ### Testing
 
 ```
-docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from app
+docker-compose -p test -f docker-compose.yml -f docker-compose.test.yml \
+    up --build --abort-on-container-exit --exit-code-from app
 ```
 
 ### Production
@@ -31,7 +32,7 @@ The container `EXPOSE`s port `8000`. To serve at `http://localhost:8080`, run `d
 ### Testing
 
 ```
-spectral lint docs/openapi.yaml
+npx @stoplight/spectral lint docs/openapi.yaml
 ```
 
 ## Documentation
@@ -39,7 +40,7 @@ spectral lint docs/openapi.yaml
 ### Developing
 
 ``` 
-redoc-cli serve docs/openapi.yaml -w
+npx redoc-cli serve docs/openapi.yaml -w
 ```
 
 Open `http://127.0.0.1:8080` in your browser. 
@@ -49,7 +50,7 @@ The documentation will automatically rebuild whenever you save a change to `docs
 ### Production
 
 ``` 
-redoc-cli bundle docs/openapi.yaml -o redoc-static.html --title 'spaCy Server'
+npx redoc-cli bundle docs/openapi.yaml -o redoc-static.html --title 'spaCy Server'
 ```
 
 Open `redoc-static.html` in your browser.
