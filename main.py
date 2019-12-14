@@ -1,16 +1,19 @@
-"""Provides spaCy NLP over an HTTP API."""
+"""Provides NLP via spaCy and sense2vec over an HTTP API."""
 
+import os
 import typing
 
-import en_core_web_sm
 import fastapi
 import pydantic
 import sense2vec
+import spacy
 import starlette.status
 
 app = fastapi.FastAPI()
-nlp = en_core_web_sm.load()
-nlp.add_pipe(sense2vec.Sense2VecComponent(nlp.vocab).from_disk("s2v_old"))
+model = os.getenv('SPACY_MODEL')
+pipeline_error = 'The pretrained model ({})'.format(model) + " doesn't support {}."
+nlp = spacy.load(model)
+nlp.add_pipe(sense2vec.Sense2VecComponent(nlp.vocab).from_disk('s2v_old'))
 
 
 class SectionsModel(pydantic.BaseModel):
@@ -19,6 +22,11 @@ class SectionsModel(pydantic.BaseModel):
 
 @app.post('/ner')
 async def recognize_named_entities(request: SectionsModel):
+    if not nlp.has_pipe('ner') or not nlp.has_pipe('parser'):
+        raise fastapi.HTTPException(
+            status_code=400,
+            detail=pipeline_error.format('named entity recognition')
+        )
     response = {'data': []}
     for doc in nlp.pipe(request.sections, disable=['tagger']):
         for sent in doc.sents:
@@ -54,6 +62,12 @@ class TextModel(pydantic.BaseModel):
 
 @app.post('/pos')
 async def tag_parts_of_speech(request: TextModel):
+    if (not nlp.has_pipe('ner') or not nlp.has_pipe('parser')
+            or not nlp.has_pipe('tagger')):
+        raise fastapi.HTTPException(
+            status_code=400,
+            detail=pipeline_error.format('part-of-speech tagging')
+        )
     data = []
     for token in [build_token(token) for token in nlp(request.text)]:
         text = token['sent']
@@ -118,6 +132,11 @@ async def tokenize(request: TextModel):
 
 @app.post('/sentencizer')
 async def sentencize(request: TextModel):
+    if not nlp.has_pipe('parser'):
+        raise fastapi.HTTPException(
+            status_code=400,
+            detail=pipeline_error.format('sentence segmentation')
+        )
     doc = nlp(request.text, disable=['tagger', 'ner'])
     return {'sentences': [sent.text for sent in doc.sents]}
 

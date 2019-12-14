@@ -23,29 +23,13 @@ download-vectors:
 test-server:
   stage: test
   image: docker/compose
-  script: docker-compose -f docker-compose.yml -f docker-compose.test.yml
+  script: SPACY_MODEL=en_core_web_sm docker-compose -f docker-compose.yml -f docker-compose.test.yml
     up --build --abort-on-container-exit --exit-code-from app
 
 test-spec:
   stage: test
   image: node
   script: npx @stoplight/spectral lint docs/openapi.yaml
-
-build-image:
-  stage: build
-  image: docker:dind
-  script:
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - version=$(grep version docs/openapi.yaml -m 1)
-    - 'version=${version#*: }'
-    - version=$(echo $version | cut -d "'" -f 2)
-    - echo v$version > version.txt
-    - docker build -t $CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:$(cat version.txt) .
-    - docker push $CI_REGISTRY_IMAGE
-    - docker push $CI_REGISTRY_IMAGE:$(cat version.txt)
-  artifacts:
-    paths: [version.txt]
-  only: [master]
 
 build-docs:
   stage: build
@@ -58,14 +42,7 @@ build-docs:
 docker-hub:
   stage: deploy
   image: docker:dind
-  script:
-    - echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USER --password-stdin https://index.docker.io/v1/
-    - docker pull $CI_REGISTRY_IMAGE
-    - docker pull $CI_REGISTRY_IMAGE:$(cat version.txt)
-    - docker tag $CI_REGISTRY_IMAGE $DOCKER_HUB_USER/spacy-server
-    - docker tag $CI_REGISTRY_IMAGE:$(cat version.txt) $DOCKER_HUB_USER/spacy-server:$(cat version.txt)
-    - docker push $DOCKER_HUB_USER/spacy-server
-    - docker push $DOCKER_HUB_USER/spacy-server:$(cat version.txt)
+  script: sh deploy.sh
   only: [master]
 
 pages:

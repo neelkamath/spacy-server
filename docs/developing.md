@@ -2,28 +2,33 @@
 
 ## Server
 
+Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`, `fr_core_news_md`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt).
+
 ### Development
 
 ```
-docker-compose -p dev up --build
+SPACY_MODEL=<MODEL> docker-compose -p dev up --build
 ```
 
 The server will be running on `http://localhost:8000`, and has automatic reload enabled.
 
 ### Testing
 
+Since any model will do, tests have been written only for the `en_core_web_sm` model for its combination of speed, features, and accuracy.
+
 ```
-docker-compose -p test -f docker-compose.yml -f docker-compose.test.yml \
+SPACY_MODEL=en_core_web_sm docker-compose -p test -f docker-compose.yml -f docker-compose.test.yml \
     up --build --abort-on-container-exit --exit-code-from app
 ```
 
 ### Production
 
 ```
-docker build -t spacy-server .
+docker build --build-arg SPACY_MODEL=<MODEL> -t spacy-server .
+docker run --rm -e SPACY_MODEL=<MODEL> -p 8000:8000 spacy-server
 ```
 
-The container `EXPOSE`s port `8000`. To serve at `http://localhost:8080`, run `docker run --rm -p 8000:8000 spacy-server`.
+The container `EXPOSE`s port `8000`.
 
 ## Specification
 
