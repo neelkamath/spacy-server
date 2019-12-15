@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: spaCy Server
-  version: '1'
+  version: '2'
   description: |
     Industrial-strength NLP via [spaCy](https://spacy.io) and [sense2vec](https://github.com/explosion/sense2vec). No
     knowledge of spaCy or sense2vec is required to use this service.

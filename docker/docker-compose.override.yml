@@ -1,5 +1,5 @@
 version: '3.7'
 services:
   app:
-    command: sh scripts/setup.sh 'uvicorn src.main:app --host 0.0.0.0 --reload'
+    command: sh -c '. scripts/setup.sh && uvicorn src.main:app --host 0.0.0.0 --reload'
     ports: ['8000:8000']

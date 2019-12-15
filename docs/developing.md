@@ -26,10 +26,9 @@ The server will be running on `http://localhost:8000`, and has automatic reload 
         docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
             run --service-ports app bash
        ```
-    1. `python -m venv venv`
-    1. `. venv/bin/activate`
+    1. `. scripts/setup.sh` (run this command every time you update `requirements.txt`)
     1. Execute tests any number of times you want with pytest (e.g., `pytest`).
-    1. You can exit the container after you're done testing by running `exit`.
+    1. After you're done testing, exit the container by running `exit`.
 
 ### Production
 
@@ -72,7 +71,10 @@ Open `redoc-static.html` in your browser.
 
 ## Releases
 
-- Create a GitHub release (this will automatically create the git tag). If you bumped the version in `docs/openapi.yaml`, then create a new release. If you haven't bumped the version but have updated the HTTP API's functionality, delete the existing GitHub release and git tag, and create a new one. Otherwise, skip this step. The release's title should be the features included (e.g., `NER, POS tagging, sentencizer, tokenizer, and sense2vec`). The tag should be the HTTP API's version (e.g., `v1`). The release's body should be ```Download and open the release asset, `redoc-static.html`, in your browser to view the HTTP API documentation.```. Upload the asset named `redoc-static.html` which contains the HTTP API docs.
+- If you haven't updated the HTTP API functionality, skip this step.
+    1. If you haven't bumped the version in the OpenAPI spec, delete the corresponding GitHub release and git tag.
+    1. Generate  `redoc-static.html`: `npx redoc-cli bundle docs/openapi.yaml -o redoc-static.html --title 'spaCy Server'`
+    1. Create a GitHub release. The release's body should be ```Download and open the release asset, `redoc-static.html`, in your browser to view the HTTP API documentation.```. Upload `redoc-static.html` as an asset.
 - If required, update the [Docker Hub repository](https://hub.docker.com/r/neelkamath/spacy-server)'s **Overview**.
 - For every commit to the `master` branch in which the tests have passed, the following will automatically be done.
     - The new images will be uploaded to Docker Hub.

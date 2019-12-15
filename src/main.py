@@ -72,7 +72,8 @@ async def tag_parts_of_speech(request: TextModel):
             detail=pipeline_error.format('part-of-speech tagging')
         )
     data = []
-    for token in [build_token(token) for token in nlp(request.text)]:
+    doc = nlp(request.text, disable=['sense2vec'])
+    for token in [build_token(token) for token in doc]:
         text = token['sent']
         del token['sent']
         if text in [obj['text'] for obj in data]:
@@ -129,7 +130,7 @@ def build_token(token):
 
 @app.post('/tokenizer')
 async def tokenize(request: TextModel):
-    doc = nlp(request.text, disable=['tagger', 'parser', 'ner'])
+    doc = nlp(request.text, disable=['tagger', 'parser', 'ner', 'sense2vec'])
     return {'tokens': [token.text for token in doc]}
 
 
@@ -140,7 +141,7 @@ async def sentencize(request: TextModel):
             status_code=400,
             detail=pipeline_error.format('sentence segmentation')
         )
-    doc = nlp(request.text, disable=['tagger', 'ner'])
+    doc = nlp(request.text, disable=['tagger', 'ner', 'sense2vec'])
     return {'sentences': [sent.text for sent in doc.sents]}
 
 
