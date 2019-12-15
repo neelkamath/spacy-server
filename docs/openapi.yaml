@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: spaCy Server
-  version: '1'
+  version: '2'
   description: |
     Industrial-strength NLP via [spaCy](https://spacy.io) and [sense2vec](https://github.com/explosion/sense2vec). No
     knowledge of spaCy or sense2vec is required to use this service.
@@ -26,8 +26,8 @@ paths:
   /ner:
     post:
       tags: [nlp]
-      description: Named entity recognition. Similar phrases will also be provided via sense2vec. The pretrained model
-        must have the `ner` and `parser` pipeline components to use this endpoint.
+      description: Named entity recognition. The pretrained model must have the `ner` and `parser` pipeline components
+        to use this endpoint. If a sense2vec model was bundled with the service, similar phrases can also be provided.
       operationId: ner
       requestBody:
         required: true
@@ -39,7 +39,7 @@ paths:
                 - Net income was $9.4 million compared to the prior year of $2.7 million. Google is a big company.
                 - Revenue exceeded twelve billion dollars, with a loss of $1b.
             schema:
-              $ref: '#/components/schemas/Sections'
+              $ref: '#/components/schemas/NERRequest'
       responses:
         '200':
           description: Labeled text, with phrases similar to each entity
@@ -74,13 +74,21 @@ paths:
                         text_with_ws: Sundar Pichai
                     text: Google is headed by Sundar Pichai.
               schema:
-                $ref: '#/components/schemas/NamedEntities'
+                $ref: '#/components/schemas/NERResponse'
         '400':
           description: The pretrained model lacks the `ner` or `parser` pipeline components.
           content:
             application/json:
-              example:
-                detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support named entity recognition.
+              examples:
+                invalid_model:
+                  summary: The spaCy model lacks the required pipeline components.
+                  value:
+                    detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support named entity recognition.
+                sense2vec_disabled:
+                  summary: Similar phrases via sense2vec were requested, but a sense2vec model wasn't bundled with the
+                    service.
+                  value:
+                    detail: There is no sense2vec model bundled with this service.
               schema:
                 $ref: '#/components/schemas/InvalidModel'
   /pos:
@@ -225,18 +233,22 @@ paths:
           description: All systems are operational
 components:
   schemas:
-    Sections:
+    NERRequest:
       type: object
       properties:
         sections:
           description:
-            Although you could pass the full text as a single array item, it would be faster to split large text
-            into multiple items. Each item needn't be semantically related.
+            Although you could pass the full text as a single array item, it would be faster to split large text into
+            multiple items. Each item needn't be semantically related.
           type: array
           items:
             type: string
+        sense2vec:
+          description: Whether to also compute similar phrases using sense2vec (significantly slower)
+          type: boolean
+          default: false
       required: [sections]
-    NamedEntities:
+    NERResponse:
       type: object
       properties:
         data:
@@ -268,7 +280,7 @@ components:
                       description: The entity’s lemma.
                     sense2vec:
                       type: array
-                      description: Phrases similar to the entity
+                      description: Phrases similar to the entity (empty if sense2vec was disabled)
                       items:
                         type: object
                         properties:

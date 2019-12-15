@@ -1,23 +1,28 @@
 {
   "data": [
     {
+      "text": "Net income was $9.4 million compared to the prior year of $2.7 million.",
       "entities": [
         {
-          "end": 6,
-          "end_char": 27,
-          "label": "MONEY",
-          "lemma": "$ 9.4 million",
-          "sense2vec": [],
-          "start": 3,
-          "start_char": 15,
           "text": "$9.4 million",
-          "text_with_ws": "$9.4 million "
+          "label": "MONEY",
+          "start_char": 15,
+          "end_char": 27,
+          "lemma": "$ 9.4 million",
+          "start": 3,
+          "end": 6,
+          "text_with_ws": "$9.4 million ",
+          "sense2vec": []
         },
         {
-          "end": 11,
-          "end_char": 54,
+          "text": "the prior year",
           "label": "DATE",
+          "start_char": 40,
+          "end_char": 54,
           "lemma": "the prior year",
+          "start": 8,
+          "end": 11,
+          "text_with_ws": "the prior year ",
           "sense2vec": [
             {
               "phrase": "the previous year",
@@ -59,17 +64,17 @@
               "phrase": "the entire year",
               "similarity": 0.6915000081062317
             }
-          ],
-          "start": 8,
-          "start_char": 40,
-          "text": "the prior year",
-          "text_with_ws": "the prior year "
+          ]
         },
         {
-          "end": 15,
-          "end_char": 70,
+          "text": "$2.7 million",
           "label": "MONEY",
+          "start_char": 58,
+          "end_char": 70,
           "lemma": "$ 2.7 million",
+          "start": 12,
+          "end": 15,
+          "text_with_ws": "$2.7 million",
           "sense2vec": [
             {
               "phrase": "$1 million",
@@ -111,22 +116,22 @@
               "phrase": "$2 million",
               "similarity": 0.7371000051498413
             }
-          ],
-          "start": 12,
-          "start_char": 58,
-          "text": "$2.7 million",
-          "text_with_ws": "$2.7 million"
+          ]
         }
-      ],
-      "text": "Net income was $9.4 million compared to the prior year of $2.7 million."
+      ]
     },
     {
+      "text": "Google is a big company.",
       "entities": [
         {
-          "end": 17,
-          "end_char": 78,
+          "text": "Google",
           "label": "ORG",
+          "start_char": 72,
+          "end_char": 78,
           "lemma": "Google",
+          "start": 16,
+          "end": 17,
+          "text_with_ws": "Google ",
           "sense2vec": [
             {
               "phrase": " Google",
@@ -168,33 +173,33 @@
               "phrase": "Yahoo",
               "similarity": 0.8037999868392944
             }
-          ],
-          "start": 16,
-          "start_char": 72,
-          "text": "Google",
-          "text_with_ws": "Google "
+          ]
         }
-      ],
-      "text": "Google is a big company."
+      ]
     },
     {
+      "text": "Revenue exceeded twelve billion dollars, with a loss of $1b.",
       "entities": [
         {
-          "end": 5,
-          "end_char": 39,
-          "label": "MONEY",
-          "lemma": "twelve billion dollar",
-          "sense2vec": [],
-          "start": 2,
-          "start_char": 17,
           "text": "twelve billion dollars",
-          "text_with_ws": "twelve billion dollars"
+          "label": "MONEY",
+          "start_char": 17,
+          "end_char": 39,
+          "lemma": "twelve billion dollar",
+          "start": 2,
+          "end": 5,
+          "text_with_ws": "twelve billion dollars",
+          "sense2vec": []
         },
         {
-          "end": 12,
-          "end_char": 59,
+          "text": "1b",
           "label": "MONEY",
+          "start_char": 57,
+          "end_char": 59,
           "lemma": "1b",
+          "start": 11,
+          "end": 12,
+          "text_with_ws": "1b",
           "sense2vec": [
             {
               "phrase": "100m",
@@ -236,14 +241,9 @@
               "phrase": "100B",
               "similarity": 0.8209999799728394
             }
-          ],
-          "start": 11,
-          "start_char": 57,
-          "text": "1b",
-          "text_with_ws": "1b"
+          ]
         }
-      ],
-      "text": "Revenue exceeded twelve billion dollars, with a loss of $1b."
+      ]
     }
   ]
 }

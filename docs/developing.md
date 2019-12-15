@@ -2,12 +2,12 @@
 
 ## Server
 
-Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`, `fr_core_news_md`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt).
+Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`, `fr_core_news_md`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt). Replace `<ENABLED>` with `1` or `0` to enable to disable sense2vec respectively.
 
 ### Development
 
 ```
-SPACY_MODEL=<MODEL> docker-compose -p dev --project-directory . \
+SPACY_MODEL=<MODEL> SENSE2VEC=<ENABLED> docker-compose -p dev --project-directory . \
     -f docker/docker-compose.yml -f docker/docker-compose.override.yml up --build
 ```
 
@@ -15,19 +15,29 @@ The server will be running on `http://localhost:8000`, and has automatic reload 
 
 ### Testing
 
-```
-docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
-    up --build --abort-on-container-exit --exit-code-from app
-```
+- For noninteractive environments (e.g., CI pipelines), you can run all the tests with the single command:
+    ```
+    docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
+        up --build --abort-on-container-exit --exit-code-from app
+    ```
+- For faster iterations (e.g., while developing), you can run the tests interactively. Changes to the source code will automatically be mirrored in the container.
+    1. Run:
+        ```
+        docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
+            run --service-ports app bash
+       ```
+    1. `. scripts/setup.sh` (run this command every time you update `requirements.txt`)
+    1. Execute tests any number of times you want with pytest (e.g., `pytest`).
+    1. After you're done testing, exit the container by running `exit`.
 
 ### Production
 
 ```
-docker build --build-arg SPACY_MODEL=<MODEL> -t spacy-server -f docker/Dockerfile .
-docker run --rm -e SPACY_MODEL=<MODEL> -p 8000:8000 spacy-server
+docker build <TARGET> --build-arg SPACY_MODEL=<MODEL> -t spacy-server -f docker/base.Dockerfile .
 ```
+Replace `<TARGET>` with `--target base` if you want to disable sense2vec, and an empty string otherwise.
 
-The container `EXPOSE`s port `8000`.
+The container `EXPOSE`s port `8000`. Run using `docker run --rm -p 8000:8000 spacy-server`.
 
 ## Specification
 
@@ -61,7 +71,10 @@ Open `redoc-static.html` in your browser.
 
 ## Releases
 
-- Create a GitHub release (this will automatically create the git tag). If you bumped the version in `docs/openapi.yaml`, then create a new release. If you haven't bumped the version but have updated the HTTP API's functionality, delete the existing GitHub release and git tag, and create a new one. Otherwise, skip this step. The release's title should be the features included (e.g., `NER, POS tagging, sentencizer, tokenizer, and sense2vec`). The tag should be the HTTP API's version (e.g., `v1`). The release's body should be ```Download and open the release asset, `redoc-static.html`, in your browser to view the HTTP API documentation.```. Upload the asset named `redoc-static.html` which contains the HTTP API docs.
+- If you haven't updated the HTTP API functionality, skip this step.
+    1. If you haven't bumped the version in the OpenAPI spec, delete the corresponding GitHub release and git tag.
+    1. Generate  `redoc-static.html`: `npx redoc-cli bundle docs/openapi.yaml -o redoc-static.html --title 'spaCy Server'`
+    1. Create a GitHub release. The release's body should be ```Download and open the release asset, `redoc-static.html`, in your browser to view the HTTP API documentation.```. Upload `redoc-static.html` as an asset.
 - If required, update the [Docker Hub repository](https://hub.docker.com/r/neelkamath/spacy-server)'s **Overview**.
 - For every commit to the `master` branch in which the tests have passed, the following will automatically be done.
     - The new images will be uploaded to Docker Hub.

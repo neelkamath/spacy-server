@@ -1,0 +1,85 @@
+{
+  "data": [
+    {
+      "text": "Net income was $9.4 million compared to the prior year of $2.7 million.",
+      "entities": [
+        {
+          "text": "$9.4 million",
+          "label": "MONEY",
+          "start_char": 15,
+          "end_char": 27,
+          "lemma": "$ 9.4 million",
+          "start": 3,
+          "end": 6,
+          "text_with_ws": "$9.4 million ",
+          "sense2vec": []
+        },
+        {
+          "text": "the prior year",
+          "label": "DATE",
+          "start_char": 40,
+          "end_char": 54,
+          "lemma": "the prior year",
+          "start": 8,
+          "end": 11,
+          "text_with_ws": "the prior year ",
+          "sense2vec": []
+        },
+        {
+          "text": "$2.7 million",
+          "label": "MONEY",
+          "start_char": 58,
+          "end_char": 70,
+          "lemma": "$ 2.7 million",
+          "start": 12,
+          "end": 15,
+          "text_with_ws": "$2.7 million",
+          "sense2vec": []
+        }
+      ]
+    },
+    {
+      "text": "Google is a big company.",
+      "entities": [
+        {
+          "text": "Google",
+          "label": "ORG",
+          "start_char": 72,
+          "end_char": 78,
+          "lemma": "Google",
+          "start": 16,
+          "end": 17,
+          "text_with_ws": "Google ",
+          "sense2vec": []
+        }
+      ]
+    },
+    {
+      "text": "Revenue exceeded twelve billion dollars, with a loss of $1b.",
+      "entities": [
+        {
+          "text": "twelve billion dollars",
+          "label": "MONEY",
+          "start_char": 17,
+          "end_char": 39,
+          "lemma": "twelve billion dollar",
+          "start": 2,
+          "end": 5,
+          "text_with_ws": "twelve billion dollars",
+          "sense2vec": []
+        },
+        {
+          "text": "1b",
+          "label": "MONEY",
+          "start_char": 57,
+          "end_char": 59,
+          "lemma": "1b",
+          "start": 11,
+          "end": 12,
+          "text_with_ws": "1b",
+          "sense2vec": []
+        }
+      ]
+    }
+  ]
+}
