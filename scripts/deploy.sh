@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
-# Builds and uploads every image (e.g., neelkamath/spacy-server:v1-en_core_web_sm) to Docker Hub.
+# Builds and uploads every image (e.g., neelkamath/spacy-server:2-en_core_web_sm) to Docker Hub.
 
 # Get the HTTP API version.
 version=$(grep version docs/openapi.yaml -m 1)
 version=${version#*: }
-version=v$(echo "$version" | cut -d "'" -f 2)
+version=$(echo "$version" | cut -d "'" -f 2)
 
 # Log in.
 echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER" --password-stdin https://index.docker.io/v1/
