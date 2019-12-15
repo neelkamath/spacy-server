@@ -16,12 +16,13 @@ nlp = spacy.load(model)
 nlp.add_pipe(sense2vec.Sense2VecComponent(nlp.vocab).from_disk('src/s2v_old'))
 
 
-class SectionsModel(pydantic.BaseModel):
+class NERRequest(pydantic.BaseModel):
     sections: typing.List[str]
+    sense2vec: bool = False
 
 
 @app.post('/ner')
-async def recognize_named_entities(request: SectionsModel):
+async def recognize_named_entities(request: NERRequest):
     if not nlp.has_pipe('ner') or not nlp.has_pipe('parser'):
         raise fastapi.HTTPException(
             status_code=400,
@@ -30,15 +31,17 @@ async def recognize_named_entities(request: SectionsModel):
     response = {'data': []}
     for doc in nlp.pipe(request.sections, disable=['tagger']):
         for sent in doc.sents:
-            entities = [build_entity(ent) for ent in sent.ents]
+            entities = [
+                build_entity(ent, request.sense2vec) for ent in sent.ents
+            ]
             data = {'text': sent.text, 'entities': entities}
             response['data'].append(data)
     return response
 
 
-def build_entity(ent):
+def build_entity(ent, use_sense2vec):
     similar = []
-    if ent._.in_s2v:
+    if use_sense2vec and ent._.in_s2v:
         for data in ent._.s2v_most_similar():
             similar.append(
                 {'phrase': data[0][0], 'similarity': float(data[1])}

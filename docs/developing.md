@@ -15,10 +15,21 @@ The server will be running on `http://localhost:8000`, and has automatic reload 
 
 ### Testing
 
-```
-docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
-    up --build --abort-on-container-exit --exit-code-from app
-```
+- For noninteractive environments (e.g., CI pipelines), you can run all the tests with the single command:
+    ```
+    docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
+        up --build --abort-on-container-exit --exit-code-from app
+    ```
+- For faster iterations (e.g., while developing), you can run the tests interactively. Changes to the source code will automatically be mirrored in the container.
+    1. Run:
+        ```
+        docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
+            run --service-ports app bash
+       ```
+    1. `python -m venv venv`
+    1. `. venv/bin/activate`
+    1. Execute tests any number of times you want with pytest (e.g., `pytest`).
+    1. You can exit the container after you're done testing by running `exit`.
 
 ### Production
 
