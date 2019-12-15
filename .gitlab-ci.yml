@@ -19,7 +19,7 @@ download-vectors:
     - tar -xzf s2v_reddit_2015_md.tar.gz -C src
     - rm s2v_reddit_2015_md.tar.gz
   artifacts:
-    paths: [s2v_old]
+    paths: [src/s2v_old]
 
 test-server:
   stage: test
