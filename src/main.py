@@ -13,7 +13,7 @@ app = fastapi.FastAPI()
 model = os.getenv('SPACY_MODEL')
 pipeline_error = 'The pretrained model ({})'.format(model) + " doesn't support {}."
 nlp = spacy.load(model)
-nlp.add_pipe(sense2vec.Sense2VecComponent(nlp.vocab).from_disk('s2v_old'))
+nlp.add_pipe(sense2vec.Sense2VecComponent(nlp.vocab).from_disk('src/s2v_old'))
 
 
 class SectionsModel(pydantic.BaseModel):

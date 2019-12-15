@@ -15,11 +15,8 @@ The server will be running on `http://localhost:8000`, and has automatic reload 
 
 ### Testing
 
-Since any model will do, tests have been written only for the `en_core_web_sm` model for its combination of speed, features, and accuracy.
-
 ```
-SPACY_MODEL=en_core_web_sm docker-compose -p test --project-directory . \
-    -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
+docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
     up --build --abort-on-container-exit --exit-code-from app
 ```
 
