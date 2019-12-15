@@ -33,7 +33,7 @@ The server will be running on `http://localhost:8000`, and has automatic reload 
 ### Production
 
 ```
-docker build <TARGET> --build-arg SPACY_MODEL=<MODEL> -t spacy-server -f docker/base.Dockerfile .
+docker build <TARGET> --build-arg SPACY_MODEL=<MODEL> -t spacy-server -f docker/Dockerfile .
 ```
 Replace `<TARGET>` with `--target base` if you want to disable sense2vec, and an empty string otherwise.
 

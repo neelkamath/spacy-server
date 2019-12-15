@@ -45,6 +45,7 @@ docker-hub:
   stage: deploy
   image: docker:dind
   script: sh scripts/deploy.sh
+  timeout: 2h
   only: [master]
 
 pages:
