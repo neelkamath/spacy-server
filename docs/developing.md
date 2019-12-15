@@ -2,12 +2,12 @@
 
 ## Server
 
-Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`, `fr_core_news_md`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt).
+Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`, `fr_core_news_md`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt). Replace `<ENABLED>` with `1` or `0` to enable to disable sense2vec respectively.
 
 ### Development
 
 ```
-SPACY_MODEL=<MODEL> docker-compose -p dev --project-directory . \
+SPACY_MODEL=<MODEL> SENSE2VEC=<ENABLED> docker-compose -p dev --project-directory . \
     -f docker/docker-compose.yml -f docker/docker-compose.override.yml up --build
 ```
 
@@ -33,11 +33,11 @@ The server will be running on `http://localhost:8000`, and has automatic reload 
 ### Production
 
 ```
-docker build --build-arg SPACY_MODEL=<MODEL> -t spacy-server -f docker/Dockerfile .
-docker run --rm -e SPACY_MODEL=<MODEL> -p 8000:8000 spacy-server
+docker build <TARGET> --build-arg SPACY_MODEL=<MODEL> -t spacy-server -f docker/base.Dockerfile .
 ```
+Replace `<TARGET>` with `--target base` if you want to disable sense2vec, and an empty string otherwise.
 
-The container `EXPOSE`s port `8000`.
+The container `EXPOSE`s port `8000`. Run using `docker run --rm -p 8000:8000 spacy-server`.
 
 ## Specification
 

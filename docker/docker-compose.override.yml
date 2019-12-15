@@ -3,3 +3,6 @@ services:
   app:
     command: sh -c '. scripts/setup.sh && uvicorn src.main:app --host 0.0.0.0 --reload'
     ports: ['8000:8000']
+    environment:
+      SPACY_MODEL:
+      SENSE2VEC:

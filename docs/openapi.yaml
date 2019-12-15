@@ -26,8 +26,8 @@ paths:
   /ner:
     post:
       tags: [nlp]
-      description: Named entity recognition. Similar phrases will also be provided via sense2vec. The pretrained model
-        must have the `ner` and `parser` pipeline components to use this endpoint.
+      description: Named entity recognition. The pretrained model must have the `ner` and `parser` pipeline components
+        to use this endpoint. If a sense2vec model was bundled with the service, similar phrases can also be provided.
       operationId: ner
       requestBody:
         required: true
@@ -79,8 +79,16 @@ paths:
           description: The pretrained model lacks the `ner` or `parser` pipeline components.
           content:
             application/json:
-              example:
-                detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support named entity recognition.
+              examples:
+                invalid_model:
+                  summary: The spaCy model lacks the required pipeline components.
+                  value:
+                    detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support named entity recognition.
+                sense2vec_disabled:
+                  summary: Similar phrases via sense2vec were requested, but a sense2vec model wasn't bundled with the
+                    service.
+                  value:
+                    detail: There is no sense2vec model bundled with this service.
               schema:
                 $ref: '#/components/schemas/InvalidModel'
   /pos:

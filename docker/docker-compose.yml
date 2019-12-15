@@ -1,14 +1,10 @@
-# It is not possible to use a Docker volume to cache the dependencies because subsequent usage of the volume
-# occasionally gets corrupted for an unknown reason. Hence, a virtual environment is to be used instead. It is known
-# that virtual environments aren't needed in Docker because isolation is already provided; we use it as a cache instead.
+# A virtual environment caches dependencies instead of a Docker volume because the volume randomly gets corrupted.
 
 version: '3.7'
 services:
   app:
     image: python:3.8
     working_dir: /app
-    environment:
-      SPACY_MODEL:
     volumes:
       - type: bind
         source: .

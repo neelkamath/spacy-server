@@ -11,9 +11,13 @@ import starlette.status
 
 app = fastapi.FastAPI()
 model = os.getenv('SPACY_MODEL')
-pipeline_error = 'The pretrained model ({})'.format(model) + " doesn't support {}."
+pipeline_error = 'The pretrained model ({})'.format(model) \
+                 + " doesn't support {}."
 nlp = spacy.load(model)
-nlp.add_pipe(sense2vec.Sense2VecComponent(nlp.vocab).from_disk('src/s2v_old'))
+if os.getenv('SENSE2VEC') == '1':
+    nlp.add_pipe(
+        sense2vec.Sense2VecComponent(nlp.vocab).from_disk('src/s2v_old')
+    )
 
 
 class NERRequest(pydantic.BaseModel):
@@ -27,6 +31,11 @@ async def recognize_named_entities(request: NERRequest):
         raise fastapi.HTTPException(
             status_code=400,
             detail=pipeline_error.format('named entity recognition')
+        )
+    if request.sense2vec and not nlp.has_pipe('sense2vec'):
+        raise fastapi.HTTPException(
+            status_code=400,
+            detail='There is no sense2vec model bundled with this service.'
         )
     response = {'data': []}
     for doc in nlp.pipe(request.sections, disable=['tagger']):

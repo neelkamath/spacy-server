@@ -12,10 +12,11 @@ ner_body = {
         'Revenue exceeded twelve billion dollars, with a loss of $1b.'
     ]
 }
+ner_sense2vec_body = {**ner_body, 'sense2vec': True}
 
 
 def test_ner_sense2vec_enabled():
-    response = client.post('/ner', json={**ner_body, 'sense2vec': True})
+    response = client.post('/ner', json=ner_sense2vec_body)
     assert response.status_code == 200
     with open('src/outputs/ner/sense2vec_enabled.json') as f:
         assert response.json() == json.load(f)
@@ -27,8 +28,12 @@ def test_ner_sense2vec_disabled():
         assert response.json() == json.load(f)
 
 
-def test_ner_fail():
+def test_ner_spacy_fail():
     fail('/ner', ner_body, 'ner')
+
+
+def test_ner_sense2vec_fail():
+    fail('/ner', ner_sense2vec_body, 'sense2vec')
 
 
 pos_body = {'text': 'Apple is looking at buying U.K. startup for $1 billion'}
