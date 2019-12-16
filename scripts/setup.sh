@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-
 # Sets up the development environment.
 
 python -m venv venv
