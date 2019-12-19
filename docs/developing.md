@@ -2,7 +2,7 @@
 
 ## Server
 
-Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`, `fr_core_news_md`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt). Replace `<ENABLED>` with `1` or `0` to enable to disable sense2vec respectively.
+Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt). Replace `<ENABLED>` with `1` or `0` to enable to disable sense2vec respectively.
 
 ### Development
 
@@ -57,9 +57,7 @@ npx @stoplight/spectral lint docs/openapi.yaml
 npx redoc-cli serve docs/openapi.yaml -w
 ```
 
-Open `http://127.0.0.1:8080` in your browser. 
-
-The documentation will automatically rebuild whenever you save a change to `docs/openapi.yaml`. Refresh the page whenever you want to view the updated documentation.
+Open `http://127.0.0.1:8080` in your browser. The documentation will automatically rebuild whenever you save a change to `docs/openapi.yaml`. Refresh the page whenever you want to view the updated documentation.
 
 ### Production
 

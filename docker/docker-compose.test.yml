@@ -4,7 +4,6 @@ services:
     command: sh -c '. scripts/setup.sh && pytest'
     environment:
       SENSE2VEC: 1
-
       # Since any model will do, tests have been written only for the en_core_web_sm model because of its combination of
       # speed, features, and accuracy.
       SPACY_MODEL: en_core_web_sm

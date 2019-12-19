@@ -1,5 +1,4 @@
-# We must specify a particular version for spaCy and sense2vec because pretrained models are only compatible with
-# particular versions.
+# Specify fixed versions for spaCy and sense2vec because pretrained models are only compatible with certain versions.
 spacy==2.2.3
 sense2vec==1.0.2
 

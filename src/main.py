@@ -7,12 +7,13 @@ import fastapi
 import pydantic
 import sense2vec
 import spacy
+import starlette.responses
 import starlette.status
 
 app = fastapi.FastAPI()
 model = os.getenv('SPACY_MODEL')
-pipeline_error = 'The pretrained model ({})'.format(model) \
-                 + " doesn't support {}."
+pipeline_error = ("The pretrained model ({}) does't support ".format(model)
+                  + '{}.')
 nlp = spacy.load(model)
 if os.getenv('SENSE2VEC') == '1':
     nlp.add_pipe(
@@ -154,6 +155,8 @@ async def sentencize(request: TextModel):
     return {'sentences': [sent.text for sent in doc.sents]}
 
 
-@app.get('/health_check', status_code=starlette.status.HTTP_204_NO_CONTENT)
+@app.get('/health_check')
 async def check_health():
-    pass
+    return starlette.responses.Response(
+        status_code=starlette.status.HTTP_204_NO_CONTENT
+    )
