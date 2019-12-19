@@ -38,6 +38,7 @@ paths:
               sections:
                 - Net income was $9.4 million compared to the prior year of $2.7 million. Google is a big company.
                 - Revenue exceeded twelve billion dollars, with a loss of $1b.
+              sense2vec: true
             schema:
               $ref: '#/components/schemas/NERRequest'
       responses:
@@ -47,32 +48,146 @@ paths:
             application/json:
               example:
                 data:
-                  - entities:
-                      - end: 1
-                        end_char: 6
-                        label: ORG
-                        lemma: Google
+                  - text: Net income was $9.4 million compared to the prior year of $2.7 million.
+                    entities:
+                      - text: "$9.4 million"
+                        label: MONEY
+                        start_char: 15
+                        end_char: 27
+                        lemma: "$ 9.4 million"
+                        start: 3
+                        end: 6
+                        text_with_ws: "$9.4 million "
+                        sense2vec: []
+                      - text: the prior year
+                        label: DATE
+                        start_char: 40
+                        end_char: 54
+                        lemma: the prior year
+                        start: 8
+                        end: 11
+                        text_with_ws: 'the prior year '
                         sense2vec:
-                          - phrase: ' Google'
+                          - phrase: the previous year
+                            similarity: 0.7810999751091003
+                          - phrase: that year
+                            similarity: 0.7346000075340271
+                          - phrase: the year prior
+                            similarity: 0.7343000173568726
+                          - phrase: the first year
+                            similarity: 0.7110000252723694
+                          - phrase: previous year
+                            similarity: 0.7109000086784363
+                          - phrase: the year before
+                            similarity: 0.7056999802589417
+                          - phrase: the following year
+                            similarity: 0.6967999935150146
+                          - phrase: prior years
+                            similarity: 0.695900022983551
+                          - phrase: the next year
+                            similarity: 0.6915000081062317
+                          - phrase: the entire year
+                            similarity: 0.6915000081062317
+                      - text: "$2.7 million"
+                        label: MONEY
+                        start_char: 58
+                        end_char: 70
+                        lemma: "$ 2.7 million"
+                        start: 12
+                        end: 15
+                        text_with_ws: "$2.7 million"
+                        sense2vec:
+                          - phrase: "$1 million"
+                            similarity: 0.7616000175476074
+                          - phrase: "$2.4 million"
+                            similarity: 0.7502999901771545
+                          - phrase: "$1.5 million"
+                            similarity: 0.7490000128746033
+                          - phrase: "$5 million"
+                            similarity: 0.7437999844551086
+                          - phrase: "$3 million"
+                            similarity: 0.741599977016449
+                          - phrase: more than $50,000
+                            similarity: 0.739799976348877
+                          - phrase: "$1.4 million"
+                            similarity: 0.7390999794006348
+                          - phrase: '750,000'
+                            similarity: 0.7386000156402588
+                          - phrase: '480,000'
+                            similarity: 0.7379999756813049
+                          - phrase: "$2 million"
+                            similarity: 0.7371000051498413
+                  - text: Google is a big company.
+                    entities:
+                      - text: Google
+                        label: ORG
+                        start_char: 72
+                        end_char: 78
+                        lemma: Google
+                        start: 16
+                        end: 17
+                        text_with_ws: 'Google '
+                        sense2vec:
+                          - phrase: " Google"
                             similarity: 0.8996000289916992
                           - phrase: search engine
                             similarity: 0.8485999703407288
+                          - phrase: Bing
+                            similarity: 0.8435999751091003
+                          - phrase: even Google
+                            similarity: 0.840399980545044
+                          - phrase: google
+                            similarity: 0.8317999839782715
+                          - phrase: Google Search
+                            similarity: 0.8291000127792358
+                          - phrase: Googles
+                            similarity: 0.8234000205993652
+                          - phrase: "&gt;Google"
+                            similarity: 0.8137999773025513
                           - phrase: DuckDuckGo
                             similarity: 0.8126999735832214
-                        start: 0
-                        start_char: 0
-                        text: Google
-                        text_with_ws: 'Google '
-                      - end: 6
-                        end_char: 33
-                        label: PERSON
-                        lemma: Sundar Pichai
+                          - phrase: Yahoo
+                            similarity: 0.8037999868392944
+                  - text: Revenue exceeded twelve billion dollars, with a loss of $1b.
+                    entities:
+                      - text: twelve billion dollars
+                        label: MONEY
+                        start_char: 17
+                        end_char: 39
+                        lemma: twelve billion dollar
+                        start: 2
+                        end: 5
+                        text_with_ws: twelve billion dollars
                         sense2vec: []
-                        start: 4
-                        start_char: 20
-                        text: Sundar Pichai
-                        text_with_ws: Sundar Pichai
-                    text: Google is headed by Sundar Pichai.
+                      - text: 1b
+                        label: MONEY
+                        start_char: 57
+                        end_char: 59
+                        lemma: 1b
+                        start: 11
+                        end: 12
+                        text_with_ws: 1b
+                        sense2vec:
+                          - phrase: 100m
+                            similarity: 0.878000020980835
+                          - phrase: 1B
+                            similarity: 0.8756999969482422
+                          - phrase: 100M
+                            similarity: 0.8744999766349792
+                          - phrase: 200M
+                            similarity: 0.8553000092506409
+                          - phrase: "$100 million"
+                            similarity: 0.8299000263214111
+                          - phrase: 50M
+                            similarity: 0.8292999863624573
+                          - phrase: "$50 million"
+                            similarity: 0.8273000121116638
+                          - phrase: 70m
+                            similarity: 0.8263000249862671
+                          - phrase: 300m
+                            similarity: 0.8253999948501587
+                          - phrase: 100B
+                            similarity: 0.8209999799728394
               schema:
                 $ref: '#/components/schemas/NERResponse'
         '400':
@@ -122,42 +237,440 @@ paths:
                 data:
                   - text: Google is a company.
                     tags:
-                      - char_offset: 0
-                        dep: nsubj
-                        ent_iob: B
-                        ent_type: ORG
+                      - text: Google
+                        text_with_ws: 'Google '
+                        whitespace: " "
                         head: is
+                        left_edge: Google
+                        right_edge: Google
                         index: 0
+                        ent_type: ORG
+                        ent_iob: B
+                        lemma: Google
+                        normalized: google
+                        shape: Xxxxx
+                        prefix: G
+                        suffix: gle
                         is_alpha: true
                         is_ascii: true
-                        is_bracket: false
-                        is_currency: false
                         is_digit: false
-                        is_left_punct: false
-                        is_oov: true
+                        is_title: true
                         is_punct: false
-                        is_quote: false
+                        is_left_punct: false
                         is_right_punct: false
                         is_space: false
-                        is_stop: false
-                        is_title: true
-                        lang: en
-                        left_edge: Google
-                        lemma: Google
-                        like_email: false
-                        like_num: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
                         like_url: false
-                        normalized: google
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: false
                         pos: PROPN
-                        prefix: G
-                        prob: -20.0
-                        right_edge: Google
-                        shape: Xxxxx
-                        suffix: gle
                         tag: NNP
-                        text: Google
-                        text_with_ws: 'Google '
-                        whitespace: ' '
+                        dep: nsubj
+                        lang: en
+                        prob: -20
+                        char_offset: 0
+                      - text: is
+                        text_with_ws: 'is '
+                        whitespace: " "
+                        head: is
+                        left_edge: Google
+                        right_edge: "."
+                        index: 1
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: be
+                        normalized: is
+                        shape: xx
+                        prefix: i
+                        suffix: is
+                        is_alpha: true
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: true
+                        pos: AUX
+                        tag: VBZ
+                        dep: ROOT
+                        lang: en
+                        prob: -20
+                        char_offset: 7
+                      - text: a
+                        text_with_ws: 'a '
+                        whitespace: " "
+                        head: company
+                        left_edge: a
+                        right_edge: a
+                        index: 2
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: a
+                        normalized: a
+                        shape: x
+                        prefix: a
+                        suffix: a
+                        is_alpha: true
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: true
+                        pos: DET
+                        tag: DT
+                        dep: det
+                        lang: en
+                        prob: -20
+                        char_offset: 10
+                      - text: company
+                        text_with_ws: company
+                        whitespace: ''
+                        head: is
+                        left_edge: a
+                        right_edge: company
+                        index: 3
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: company
+                        normalized: company
+                        shape: xxxx
+                        prefix: c
+                        suffix: any
+                        is_alpha: true
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: false
+                        pos: NOUN
+                        tag: NN
+                        dep: attr
+                        lang: en
+                        prob: -20
+                        char_offset: 12
+                      - text: "."
+                        text_with_ws: ". "
+                        whitespace: " "
+                        head: is
+                        left_edge: "."
+                        right_edge: "."
+                        index: 4
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: "."
+                        normalized: "."
+                        shape: "."
+                        prefix: "."
+                        suffix: "."
+                        is_alpha: false
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: true
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: false
+                        pos: PUNCT
+                        tag: "."
+                        dep: punct
+                        lang: en
+                        prob: -20
+                        char_offset: 19
+                  - text: Sundar Pichai is it's CEO.
+                    tags:
+                      - text: Sundar
+                        text_with_ws: 'Sundar '
+                        whitespace: " "
+                        head: Pichai
+                        left_edge: Sundar
+                        right_edge: Sundar
+                        index: 5
+                        ent_type: PERSON
+                        ent_iob: B
+                        lemma: Sundar
+                        normalized: sundar
+                        shape: Xxxxx
+                        prefix: S
+                        suffix: dar
+                        is_alpha: true
+                        is_ascii: true
+                        is_digit: false
+                        is_title: true
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: false
+                        pos: PROPN
+                        tag: NNP
+                        dep: compound
+                        lang: en
+                        prob: -20
+                        char_offset: 21
+                      - text: Pichai
+                        text_with_ws: 'Pichai '
+                        whitespace: " "
+                        head: is
+                        left_edge: Sundar
+                        right_edge: Pichai
+                        index: 6
+                        ent_type: PERSON
+                        ent_iob: I
+                        lemma: Pichai
+                        normalized: pichai
+                        shape: Xxxxx
+                        prefix: P
+                        suffix: hai
+                        is_alpha: true
+                        is_ascii: true
+                        is_digit: false
+                        is_title: true
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: false
+                        pos: PROPN
+                        tag: NNP
+                        dep: nsubj
+                        lang: en
+                        prob: -20
+                        char_offset: 28
+                      - text: is
+                        text_with_ws: 'is '
+                        whitespace: " "
+                        head: is
+                        left_edge: Sundar
+                        right_edge: "."
+                        index: 7
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: be
+                        normalized: is
+                        shape: xx
+                        prefix: i
+                        suffix: is
+                        is_alpha: true
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: true
+                        pos: AUX
+                        tag: VBZ
+                        dep: ROOT
+                        lang: en
+                        prob: -20
+                        char_offset: 35
+                      - text: it
+                        text_with_ws: it
+                        whitespace: ''
+                        head: "'s"
+                        left_edge: it
+                        right_edge: it
+                        index: 8
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: "-PRON-"
+                        normalized: it
+                        shape: xx
+                        prefix: i
+                        suffix: it
+                        is_alpha: true
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: true
+                        pos: PRON
+                        tag: PRP
+                        dep: nsubj
+                        lang: en
+                        prob: -20
+                        char_offset: 38
+                      - text: "'s"
+                        text_with_ws: "'s "
+                        whitespace: " "
+                        head: is
+                        left_edge: it
+                        right_edge: CEO
+                        index: 9
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: be
+                        normalized: "'s"
+                        shape: "'x"
+                        prefix: "'"
+                        suffix: "'s"
+                        is_alpha: false
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: true
+                        pos: AUX
+                        tag: VBZ
+                        dep: ccomp
+                        lang: en
+                        prob: -20
+                        char_offset: 40
+                      - text: CEO
+                        text_with_ws: CEO
+                        whitespace: ''
+                        head: "'s"
+                        left_edge: CEO
+                        right_edge: CEO
+                        index: 10
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: ceo
+                        normalized: ceo
+                        shape: XXX
+                        prefix: C
+                        suffix: CEO
+                        is_alpha: true
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: false
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: false
+                        pos: NOUN
+                        tag: NN
+                        dep: attr
+                        lang: en
+                        prob: -20
+                        char_offset: 43
+                      - text: "."
+                        text_with_ws: "."
+                        whitespace: ''
+                        head: is
+                        left_edge: "."
+                        right_edge: "."
+                        index: 11
+                        ent_type: ''
+                        ent_iob: O
+                        lemma: "."
+                        normalized: "."
+                        shape: "."
+                        prefix: "."
+                        suffix: "."
+                        is_alpha: false
+                        is_ascii: true
+                        is_digit: false
+                        is_title: false
+                        is_punct: true
+                        is_left_punct: false
+                        is_right_punct: false
+                        is_space: false
+                        is_bracket: false
+                        is_quote: false
+                        is_currency: false
+                        like_url: false
+                        like_num: false
+                        like_email: false
+                        is_oov: true
+                        is_stop: false
+                        pos: PUNCT
+                        tag: "."
+                        dep: punct
+                        lang: en
+                        prob: -20
+                        char_offset: 46
               schema:
                 $ref: '#/components/schemas/PartsOfSpeech'
         '400':

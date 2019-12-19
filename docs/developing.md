@@ -41,13 +41,7 @@ The container `EXPOSE`s port `8000`. Run using `docker run --rm -p 8000:8000 spa
 
 ## Specification
 
-`docs/openapi.yaml` is the [OpenAPI specification](https://swagger.io/specification/) for the HTTP API. Use `$ref` instead of inlining `schema`s so that OpenAPI Generator will name give usable names to the models.
-
-### Testing
-
-```
-npx @stoplight/spectral lint docs/openapi.yaml
-```
+`docs/openapi.yaml` is the [OpenAPI specification](https://swagger.io/specification/) for the HTTP API. Use `$ref` instead of inlining `schema`s so that OpenAPI Generator will name give usable names to the models. Validate the schema by running `npx @stoplight/spectral lint docs/openapi.yaml`.
 
 ## Documentation
 
