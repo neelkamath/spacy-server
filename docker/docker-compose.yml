@@ -1,5 +1,4 @@
 # A virtual environment caches dependencies instead of a Docker volume because the volume randomly gets corrupted.
-
 version: '3.7'
 services:
   app:

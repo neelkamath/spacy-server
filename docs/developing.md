@@ -2,7 +2,7 @@
 
 ## Server
 
-Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`, `fr_core_news_md`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt). Replace `<ENABLED>` with `1` or `0` to enable to disable sense2vec respectively.
+Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e.g., `en_core_web_sm`). The model must be compatible with the spaCy version specified in [requirements.txt](../requirements.txt). Replace `<ENABLED>` with `1` or `0` to enable to disable sense2vec respectively.
 
 ### Development
 
@@ -41,13 +41,7 @@ The container `EXPOSE`s port `8000`. Run using `docker run --rm -p 8000:8000 spa
 
 ## Specification
 
-`docs/openapi.yaml` is the [OpenAPI specification](https://swagger.io/specification/) for the HTTP API. Use `$ref` instead of inlining `schema`s so that OpenAPI Generator will name give usable names to the models.
-
-### Testing
-
-```
-npx @stoplight/spectral lint docs/openapi.yaml
-```
+`docs/openapi.yaml` is the [OpenAPI specification](https://swagger.io/specification/) for the HTTP API. Use `$ref` instead of inlining `schema`s so that OpenAPI Generator will name give usable names to the models. Validate the schema by running `npx @stoplight/spectral lint docs/openapi.yaml`.
 
 ## Documentation
 
@@ -57,9 +51,7 @@ npx @stoplight/spectral lint docs/openapi.yaml
 npx redoc-cli serve docs/openapi.yaml -w
 ```
 
-Open `http://127.0.0.1:8080` in your browser. 
-
-The documentation will automatically rebuild whenever you save a change to `docs/openapi.yaml`. Refresh the page whenever you want to view the updated documentation.
+Open `http://127.0.0.1:8080` in your browser. The documentation will automatically rebuild whenever you save a change to `docs/openapi.yaml`. Refresh the page whenever you want to view the updated documentation.
 
 ### Production
 
