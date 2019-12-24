@@ -206,6 +206,71 @@ paths:
                     detail: There is no sense2vec model bundled with this service.
               schema:
                 $ref: '#/components/schemas/InvalidModel'
+  /sense2vec:
+    post:
+      tags: [nlp]
+      description: Compute phrases similar to a phrase in a sentence. sense2vec must be bundled with the service, and
+        the pretrained model must have the `ner` and `parser` pipeline components.
+      operationId: sense2vec
+      requestBody:
+        required: true
+        description: The phrase in the sentence
+        content:
+          application/json:
+            example:
+              sentence: Bill Gates founded Microsoft in April 4, 1975.
+              phrase: Bill Gates
+            schema:
+              $ref: '#/components/schemas/SentenceWithPhrase'
+      responses:
+        '200':
+          description: Computed phrases
+          content:
+            application/json:
+              example:
+                sense2vec:
+                  - phrase: Mark Zuckerberg
+                    similarity: 0.850600004196167
+                  - phrase: Warren Buffet
+                    similarity: 0.8501999974250793
+                  - phrase: Warren Buffett
+                    similarity: 0.8375999927520752
+                  - phrase: bill gates
+                    similarity: 0.8215000033378601
+                  - phrase: Steve Jobs
+                    similarity: 0.8180999755859375
+                  - phrase: Zuckerberg
+                    similarity: 0.8163999915122986
+                  - phrase: Elon Musk
+                    similarity: 0.8140000104904175
+                  - phrase: Bill gates
+                    similarity: 0.8119999766349792
+                  - phrase: billionaire
+                    similarity: 0.8116999864578247
+                  - phrase: Elon Musk
+                    similarity: 0.8011999726295471
+              schema:
+                $ref: '#/components/schemas/Sense2vecPhrases'
+        '400':
+          description: sense2vec is disabled, or the pretrained model lacks the `ner` or `parser` pipeline components.
+          content:
+            application/json:
+              examples:
+                invalid_model:
+                  summary: The spaCy model lacks the required pipeline components.
+                  value:
+                    detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support named entity recognition.
+                sense2vec_disabled:
+                  summary: Similar phrases via sense2vec were requested, but a sense2vec model wasn't bundled with the
+                    service.
+                  value:
+                    detail: There is no sense2vec model bundled with this service.
+                phrase_nonexistent:
+                  summary: The phrase isn't present in the sentence.
+                  value:
+                    detail: phrase must be in sentence
+              schema:
+                $ref: '#/components/schemas/InvalidModel'
   /pos:
     post:
       tags: [nlp]
@@ -825,6 +890,32 @@ components:
         text:
           type: string
       required: [text]
+    SentenceWithPhrase:
+      type: object
+      properties:
+        sentence:
+          type: string
+          description: The sentence containing the phrase.
+        phrase:
+          type: string
+          description: sense2vec will be run only on this phrase.
+      required: [sentence, phrase]
+    Sense2vecPhrases:
+      type: object
+      properties:
+        sense2vec:
+          type: array
+          description: Phrases similar to the entity
+          items:
+            type: object
+            properties:
+              phrase:
+                type: string
+              similarity:
+                type: number
+                description: Similarity in the range of 0-1
+            required: [phrase, similarity]
+      required: [sense2vec]
     PartsOfSpeech:
       type: object
       properties:

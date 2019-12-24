@@ -1,0 +1,44 @@
+{
+  "sense2vec": [
+    {
+      "phrase": "Mark Zuckerberg",
+      "similarity": 0.850600004196167
+    },
+    {
+      "phrase": "Warren Buffet",
+      "similarity": 0.8501999974250793
+    },
+    {
+      "phrase": "Warren Buffett",
+      "similarity": 0.8375999927520752
+    },
+    {
+      "phrase": "bill gates",
+      "similarity": 0.8215000033378601
+    },
+    {
+      "phrase": "Steve Jobs",
+      "similarity": 0.8180999755859375
+    },
+    {
+      "phrase": "Zuckerberg",
+      "similarity": 0.8163999915122986
+    },
+    {
+      "phrase": "Elon Musk",
+      "similarity": 0.8140000104904175
+    },
+    {
+      "phrase": "Bill gates",
+      "similarity": 0.8119999766349792
+    },
+    {
+      "phrase": "billionaire",
+      "similarity": 0.8116999864578247
+    },
+    {
+      "phrase": "Elon Musk",
+      "similarity": 0.8011999726295471
+    }
+  ]
+}

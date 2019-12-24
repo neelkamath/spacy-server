@@ -1,5 +1,8 @@
 """Provides NLP via spaCy and sense2vec over an HTTP API."""
 
+# Class methods annotated with <@pydantic.root_validator> must not be additionally annotated with <@classmethod> because
+# it break exception handling.
+
 import os
 import typing
 
@@ -21,6 +24,16 @@ if os.getenv('SENSE2VEC') == '1':
     )
 
 
+def enforce_components(components: typing.List[str], message: str) -> None:
+    """Throws the <message> if the model doesn't have the <components>."""
+    for component in components:
+        if not nlp.has_pipe(component):
+            raise fastapi.HTTPException(
+                status_code=400,
+                detail=pipeline_error.format(message)
+            )
+
+
 class NERRequest(pydantic.BaseModel):
     sections: typing.List[str]
     sense2vec: bool = False
@@ -28,15 +41,11 @@ class NERRequest(pydantic.BaseModel):
 
 @app.post('/ner')
 async def recognize_named_entities(request: NERRequest):
-    if not nlp.has_pipe('ner') or not nlp.has_pipe('parser'):
-        raise fastapi.HTTPException(
-            status_code=400,
-            detail=pipeline_error.format('named entity recognition')
-        )
-    if request.sense2vec and not nlp.has_pipe('sense2vec'):
-        raise fastapi.HTTPException(
-            status_code=400,
-            detail='There is no sense2vec model bundled with this service.'
+    enforce_components(['ner', 'parser'], 'named entity recognition')
+    if request.sense2vec:
+        enforce_components(
+            ['sense2vec'],
+            'There is no sense2vec model bundled with this service.'
         )
     response = {'data': []}
     for doc in nlp.pipe(request.sections, disable=['tagger']):
@@ -49,13 +58,31 @@ async def recognize_named_entities(request: NERRequest):
     return response
 
 
-def build_entity(ent, use_sense2vec):
+class SimilarPhrase(pydantic.BaseModel):
+    """Similar phrases computed by sense2vec."""
+
+    """The similar phrase."""
+    phrase: str
+    """The phrase's similarity in the range of 0-1."""
+    similarity: float
+
+
+def compute_phrases(ent) -> typing.List[SimilarPhrase]:
+    """Computes similar phrases for the entity (<ent>).
+
+    The entity must have already been processed by the ner, parser, and
+    sense2vec pipeline components.
+    """
     similar = []
-    if use_sense2vec and ent._.in_s2v:
+    if ent._.in_s2v:
         for data in ent._.s2v_most_similar():
             similar.append(
-                {'phrase': data[0][0], 'similarity': float(data[1])}
+                SimilarPhrase(phrase=data[0][0], similarity=float(data[1]))
             )
+    return similar
+
+
+def build_entity(ent: spacy, use_sense2vec: bool):
     return {
         'text': ent.text,
         'label': ent.label_,
@@ -65,8 +92,33 @@ def build_entity(ent, use_sense2vec):
         'start': ent.start,
         'end': ent.end,
         'text_with_ws': ent.text_with_ws,
-        'sense2vec': similar,
+        'sense2vec': compute_phrases(ent) if use_sense2vec else [],
     }
+
+
+class PhraseInSentence(pydantic.BaseModel):
+    """A <phrase> in a <sentence>."""
+
+    sentence: str
+    phrase: str
+
+    @pydantic.root_validator
+    def check_passwords_match(cls, values):
+        if values.get('phrase') not in values.get('sentence'):
+            raise fastapi.HTTPException(
+                status_code=400,
+                detail='phrase must be in sentence'
+            )
+        return values
+
+
+@app.post('/sense2vec')
+async def sense2vec(request: PhraseInSentence):
+    enforce_components(['ner', 'parser', 'sense2vec'], 'sense2vec')
+    doc = nlp(request.sentence, disable=['tagger'])
+    for ent in list(doc.sents)[0].ents:
+        if ent.text == request.phrase:
+            return {'sense2vec': compute_phrases(ent)}
 
 
 class TextModel(pydantic.BaseModel):
@@ -75,12 +127,7 @@ class TextModel(pydantic.BaseModel):
 
 @app.post('/pos')
 async def tag_parts_of_speech(request: TextModel):
-    if (not nlp.has_pipe('ner') or not nlp.has_pipe('parser')
-            or not nlp.has_pipe('tagger')):
-        raise fastapi.HTTPException(
-            status_code=400,
-            detail=pipeline_error.format('part-of-speech tagging')
-        )
+    enforce_components(['ner', 'parser', 'tagger'], 'part-of-speech tagging')
     data = []
     doc = nlp(request.text, disable=['sense2vec'])
     for token in [build_token(token) for token in doc]:
@@ -146,11 +193,7 @@ async def tokenize(request: TextModel):
 
 @app.post('/sentencizer')
 async def sentencize(request: TextModel):
-    if not nlp.has_pipe('parser'):
-        raise fastapi.HTTPException(
-            status_code=400,
-            detail=pipeline_error.format('sentence segmentation')
-        )
+    enforce_components(['parser'], 'sentence segmentation')
     doc = nlp(request.text, disable=['tagger', 'ner', 'sense2vec'])
     return {'sentences': [sent.text for sent in doc.sents]}
 
