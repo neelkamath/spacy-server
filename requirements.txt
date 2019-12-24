@@ -4,4 +4,4 @@ sense2vec==1.0.2
 
 fastapi==0.45.0
 uvicorn==0.10.8
-pytest>=4.6.7,<5
+pytest>=5.3.2,<6
