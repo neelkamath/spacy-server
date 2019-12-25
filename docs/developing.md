@@ -15,20 +15,12 @@ The server will be running on `http://localhost:8000`, and has automatic reload 
 
 ### Testing
 
-- For noninteractive environments (e.g., CI pipelines), you can run all the tests with the single command:
-    ```
-    docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
-        up --build --abort-on-container-exit --exit-code-from app
-    ```
-- For faster iterations (e.g., while developing), you can run the tests interactively. Changes to the source code will automatically be mirrored in the container.
-    1. Run:
-        ```
-        docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
-            run --service-ports app bash
-       ```
-    1. `. scripts/setup.sh` (run this command every time you update `requirements.txt`)
-    1. Execute tests any number of times you want with pytest (e.g., `pytest`).
-    1. After you're done testing, exit the container by running `exit`.
+```
+docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
+    run --service-ports app sh -c '. scripts/setup.sh && bash'
+   ```
+
+Changes to the source code will automatically be mirrored in the container. A bind mount connects the project directory and the container so that you can run commands like `pytest`.
 
 ### Production
 

@@ -24,9 +24,8 @@ download-vectors:
 test-server:
   stage: test
   image: docker/compose
-  script: SPACY_MODEL=en_core_web_sm docker-compose --project-directory .
-    -f docker/docker-compose.yml -f docker/docker-compose.test.yml
-    up --build --abort-on-container-exit --exit-code-from app
+  script: docker-compose --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml
+    run app sh -c '. scripts/setup.sh && pytest'
 
 test-spec:
   stage: test

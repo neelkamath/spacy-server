@@ -116,9 +116,11 @@ class PhraseInSentence(pydantic.BaseModel):
 async def sense2vec(request: PhraseInSentence):
     enforce_components(['ner', 'parser', 'sense2vec'], 'sense2vec')
     doc = nlp(request.sentence, disable=['tagger'])
+    phrases = []
     for ent in list(doc.sents)[0].ents:
         if ent.text == request.phrase:
-            return {'sense2vec': compute_phrases(ent)}
+            phrases = compute_phrases(ent)
+    return {'sense2vec': phrases}
 
 
 class TextModel(pydantic.BaseModel):
