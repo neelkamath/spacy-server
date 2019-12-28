@@ -121,8 +121,3 @@ def test_compute_phrases():
         if ent.text == 'Bill Gates':
             with open('src/outputs/compute_phrases.json') as f:
                 assert main.compute_phrases(ent) == json.load(f)
-
-
-def test_phrase_in_sentence():
-    with pytest.raises(fastapi.HTTPException):
-        main.PhraseInSentence(sentence='My name is John.', phrase='Johnny')

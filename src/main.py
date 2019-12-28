@@ -1,8 +1,5 @@
 """Provides NLP via spaCy and sense2vec over an HTTP API."""
 
-# Class methods annotated with <@pydantic.root_validator> must not be additionally annotated with <@classmethod> because
-# it break exception handling.
-
 import os
 import typing
 
@@ -15,8 +12,7 @@ import starlette.status
 
 app = fastapi.FastAPI()
 model = os.getenv('SPACY_MODEL')
-pipeline_error = ("The pretrained model ({}) does't support ".format(model)
-                  + '{}.')
+pipeline_error = f"The pretrained model ({model}) doesn't support " + '{}.'
 nlp = spacy.load(model)
 if os.getenv('SENSE2VEC') == '1':
     nlp.add_pipe(
@@ -103,12 +99,9 @@ class PhraseInSentence(pydantic.BaseModel):
     phrase: str
 
     @pydantic.root_validator
-    def check_passwords_match(cls, values):
+    def phrase_must_be_in_sentence(cls, values):
         if values.get('phrase') not in values.get('sentence'):
-            raise fastapi.HTTPException(
-                status_code=400,
-                detail='phrase must be in sentence'
-            )
+            raise ValueError('phrase must be in sentence')
         return values
 
 

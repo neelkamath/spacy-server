@@ -35,16 +35,16 @@ The container `EXPOSE`s port `8000`. Run using `docker run --rm -p 8000:8000 spa
 
 `docs/spec/` contains the [OpenAPI specification](https://swagger.io/specification/) for the HTTP API. Use `$ref` instead of inlining `schema`s so that OpenAPI Generator will give usable names to the models.
 
-### Testing
-
-```
-npx @stoplight/spectral lint docs/spec/openapi.yaml
-```
-
 ### Developing
 
 ``` 
 npx redoc-cli serve docs/spec/openapi.yaml -w
+```
+
+### Testing
+
+```
+npx @stoplight/spectral lint docs/spec/openapi.yaml
 ```
 
 Open `http://127.0.0.1:8080` in your browser. The documentation will automatically rebuild whenever you save a change to `docs/spec/openapi.yaml`. Refresh the page whenever you want to view the updated documentation.
