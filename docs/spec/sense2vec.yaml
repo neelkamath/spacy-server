@@ -56,9 +56,5 @@ post:
                 service.
               value:
                 detail: There is no sense2vec model bundled with this service.
-            phrase_nonexistent:
-              summary: The phrase isn't present in the sentence.
-              value:
-                detail: phrase must be in sentence
           schema:
             $ref: components.yaml#/components/schemas/InvalidModel

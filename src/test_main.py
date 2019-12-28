@@ -1,128 +1,134 @@
 import json
+import re
+import typing
 
 import fastapi
 import main
+import pydantic
 import pytest
+import requests
 import starlette.testclient
 
-client = starlette.testclient.TestClient(main.app)
+client: starlette.testclient.TestClient = starlette.testclient.TestClient(
+    main.app
+)
 
-ner_body = {
-    'sections': [
-        'Net income was $9.4 million compared to the prior year of $2.7 '
-        + 'million. Google is a big company.',
-        'Revenue exceeded twelve billion dollars, with a loss of $1b.'
-    ]
-}
-ner_sense2vec_body = {**ner_body, 'sense2vec': True}
+ner_sections: typing.List[str] = [
+    'Net income was $9.4 million compared to the prior year of $2.7 million. '
+    + 'Google is a big company.',
+    'Revenue exceeded twelve billion dollars, with a loss of $1b.'
+]
 
 
-def test_ner_sense2vec_enabled():
-    response = client.post('/ner', json=ner_sense2vec_body)
+def test_ner_sense2vec_enabled() -> None:
+    response: requests.Response = client.post(
+        '/ner',
+        json=dict(main.NERRequest(sections=ner_sections, sense2vec=True))
+    )
     assert response.status_code == 200
     with open('src/outputs/ner/sense2vec_enabled.json') as f:
         assert response.json() == json.load(f)
 
 
-def test_ner_sense2vec_disabled():
-    response = client.post('/ner', json=ner_body)
+def test_ner_sense2vec_disabled() -> None:
+    response: requests.Response = client.post(
+        '/ner',
+        json=dict(main.NERRequest(sections=ner_sections))
+    )
     with open('src/outputs/ner/sense2vec_disabled.json') as f:
         assert response.json() == json.load(f)
 
 
-def test_ner_spacy_fail():
-    fail('/ner', ner_body, 'ner')
+def test_ner_spacy_fail() -> None:
+    fail('/ner', main.NERRequest(sections=ner_sections), pipe='ner')
 
 
-def test_ner_sense2vec_fail():
-    fail('/ner', ner_sense2vec_body, 'sense2vec')
+def test_ner_sense2vec_fail() -> None:
+    fail(
+        '/ner',
+        main.NERRequest(sections=ner_sections, sense2vec=True),
+        pipe='sense2vec'
+    )
 
 
-def test_sense2vec_success():
-    body = {
-        'sentence': 'Bill Gates founded Microsoft in April 4, 1975.',
-        'phrase': 'Bill Gates'
-    }
-    response = client.post('/sense2vec', json=body)
+def test_sense2vec_success() -> None:
+    body: main.PhraseInSentence = main.PhraseInSentence(
+        sentence='Bill Gates founded Microsoft in April 4, 1975.',
+        phrase='Bill Gates'
+    )
+    response: requests.Response = client.post('/sense2vec', json=dict(body))
     assert response.status_code == 200
     with open('src/outputs/sense2vec.json') as f:
         assert response.json() == json.load(f)
 
 
-def test_sense2vec_fail():
-    response = client.post(
-        '/sense2vec',
-        json={'sentence': 'My name is John Doe.', 'phrase': 'Johnny Doe'}
-    )
-    assert response.status_code == 400
-    assert response.json()['detail'] == 'phrase must be in sentence'
+pos_body: main.TextModel = main.TextModel(
+    text='Apple is looking at buying U.K. startup for $1 billion'
+)
 
 
-pos_body = {'text': 'Apple is looking at buying U.K. startup for $1 billion'}
-
-
-def test_pos():
-    response = client.post('/pos', json=pos_body)
+def test_pos() -> None:
+    response: requests.Response = client.post('/pos', json=dict(pos_body))
     assert response.status_code == 200
     with open('src/outputs/pos.json') as f:
         assert response.json() == json.load(f)
 
 
-def test_pos_fail():
-    fail('/pos', pos_body, 'parser')
+def test_pos_fail() -> None:
+    fail('/pos', pos_body, pipe='parser')
 
 
-def test_tokenizer():
-    text = {'text': 'Apple is looking at buying U.K. startup for $1 billion'}
-    response = client.post('/tokenizer', json=text)
+def test_tokenizer() -> None:
+    text: main.TextModel = main.TextModel(
+        text='Apple is looking at buying U.K. startup for $1 billion'
+    )
+    response: requests.Response = client.post('/tokenizer', json=dict(text))
     assert response.status_code == 200
     with open('src/outputs/tokenizer.json') as f:
         assert response.json() == json.load(f)
 
 
-sentencizer_body = {
-    'text': 'Apple is looking at buying U.K. startup for $1 billion. Another '
-            + 'sentence.'
-}
+sentencizer_body: main.TextModel = main.TextModel(
+    text='Apple is looking at buying U.K. startup for $1 billion. Another '
+         + 'sentence.'
+)
 
 
-def test_sentencizer():
-    response = client.post('/sentencizer', json=sentencizer_body)
+def test_sentencizer() -> None:
+    response: requests.Response = client.post(
+        '/sentencizer',
+        json=dict(sentencizer_body)
+    )
     assert response.status_code == 200
     with open('src/outputs/sentencizer.json') as f:
         assert response.json() == json.load(f)
 
 
-def test_sentencizer_fail():
-    fail('/sentencizer', sentencizer_body, 'parser')
+def test_sentencizer_fail() -> None:
+    fail('/sentencizer', sentencizer_body, pipe='parser')
 
 
-def test_health_check():
+def test_health_check() -> None:
     assert client.get('/health_check').status_code == 204
 
 
-def fail(endpoint, body, pipe):
+def fail(endpoint: str, body: pydantic.BaseModel, pipe: str) -> None:
     with main.nlp.disable_pipes(pipe):
-        response = client.post(endpoint, json=body)
-        assert response.status_code == 400
+        response: requests.Response = client.post(endpoint, json=dict(body))
+        assert re.match(r'4\d\d', str(response.status_code))
         assert 'detail' in response.json()
 
 
-def test_enforce_components():
+def test_enforce_components() -> None:
     with pytest.raises(fastapi.HTTPException):
-        component = 'nonexistent_component'
+        component: str = 'nonexistent_component'
         main.enforce_components([component], component)
 
 
-def test_compute_phrases():
-    sentence = 'Bill Gates founded Microsoft in April 4, 1975.'
-    doc = main.nlp(sentence, disable=['tagger'])
+def test_compute_phrases() -> None:
+    sentence: str = 'Bill Gates founded Microsoft in April 4, 1975.'
+    doc: main.nlp = main.nlp(sentence, disable=['tagger'])
     for ent in list(doc.sents)[0].ents:
         if ent.text == 'Bill Gates':
             with open('src/outputs/compute_phrases.json') as f:
                 assert main.compute_phrases(ent) == json.load(f)
-
-
-def test_phrase_in_sentence():
-    with pytest.raises(fastapi.HTTPException):
-        main.PhraseInSentence(sentence='My name is John.', phrase='Johnny')
