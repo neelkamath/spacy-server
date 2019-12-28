@@ -1,0 +1,474 @@
+post:
+  tags: [nlp]
+  description: Part-of-speech tagging. The pretrained model needs the `parser`, `ner`, and `tagger` pipeline
+    components for this endpoint to be usable.
+  operationId: pos
+  requestBody:
+    required: true
+    description: Text to process
+    content:
+      application/json:
+        examples:
+          sentences:
+            summary: Supplying sentences to annotate
+            value:
+              text: Google is a company. Sundar Pichai is it's CEO.
+          phrase:
+            summary: Supplying a phrase to annotate
+            value:
+              text: Apple is looking at buying U.K. startup for $1 billion
+        schema:
+          $ref: components.yaml#/components/schemas/Text
+  responses:
+    '200':
+      description: Annotated text
+      content:
+        application/json:
+          example:
+            data:
+              - text: Google is a company.
+                tags:
+                  - text: Google
+                    text_with_ws: 'Google '
+                    whitespace: " "
+                    head: is
+                    left_edge: Google
+                    right_edge: Google
+                    index: 0
+                    ent_type: ORG
+                    ent_iob: B
+                    lemma: Google
+                    normalized: google
+                    shape: Xxxxx
+                    prefix: G
+                    suffix: gle
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: true
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: false
+                    pos: PROPN
+                    tag: NNP
+                    dep: nsubj
+                    lang: en
+                    prob: -20
+                    char_offset: 0
+                  - text: is
+                    text_with_ws: 'is '
+                    whitespace: " "
+                    head: is
+                    left_edge: Google
+                    right_edge: "."
+                    index: 1
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: be
+                    normalized: is
+                    shape: xx
+                    prefix: i
+                    suffix: is
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: true
+                    pos: AUX
+                    tag: VBZ
+                    dep: ROOT
+                    lang: en
+                    prob: -20
+                    char_offset: 7
+                  - text: a
+                    text_with_ws: 'a '
+                    whitespace: " "
+                    head: company
+                    left_edge: a
+                    right_edge: a
+                    index: 2
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: a
+                    normalized: a
+                    shape: x
+                    prefix: a
+                    suffix: a
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: true
+                    pos: DET
+                    tag: DT
+                    dep: det
+                    lang: en
+                    prob: -20
+                    char_offset: 10
+                  - text: company
+                    text_with_ws: company
+                    whitespace: ''
+                    head: is
+                    left_edge: a
+                    right_edge: company
+                    index: 3
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: company
+                    normalized: company
+                    shape: xxxx
+                    prefix: c
+                    suffix: any
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: false
+                    pos: NOUN
+                    tag: NN
+                    dep: attr
+                    lang: en
+                    prob: -20
+                    char_offset: 12
+                  - text: "."
+                    text_with_ws: ". "
+                    whitespace: " "
+                    head: is
+                    left_edge: "."
+                    right_edge: "."
+                    index: 4
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: "."
+                    normalized: "."
+                    shape: "."
+                    prefix: "."
+                    suffix: "."
+                    is_alpha: false
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: true
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: false
+                    pos: PUNCT
+                    tag: "."
+                    dep: punct
+                    lang: en
+                    prob: -20
+                    char_offset: 19
+              - text: Sundar Pichai is it's CEO.
+                tags:
+                  - text: Sundar
+                    text_with_ws: 'Sundar '
+                    whitespace: " "
+                    head: Pichai
+                    left_edge: Sundar
+                    right_edge: Sundar
+                    index: 5
+                    ent_type: PERSON
+                    ent_iob: B
+                    lemma: Sundar
+                    normalized: sundar
+                    shape: Xxxxx
+                    prefix: S
+                    suffix: dar
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: true
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: false
+                    pos: PROPN
+                    tag: NNP
+                    dep: compound
+                    lang: en
+                    prob: -20
+                    char_offset: 21
+                  - text: Pichai
+                    text_with_ws: 'Pichai '
+                    whitespace: " "
+                    head: is
+                    left_edge: Sundar
+                    right_edge: Pichai
+                    index: 6
+                    ent_type: PERSON
+                    ent_iob: I
+                    lemma: Pichai
+                    normalized: pichai
+                    shape: Xxxxx
+                    prefix: P
+                    suffix: hai
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: true
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: false
+                    pos: PROPN
+                    tag: NNP
+                    dep: nsubj
+                    lang: en
+                    prob: -20
+                    char_offset: 28
+                  - text: is
+                    text_with_ws: 'is '
+                    whitespace: " "
+                    head: is
+                    left_edge: Sundar
+                    right_edge: "."
+                    index: 7
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: be
+                    normalized: is
+                    shape: xx
+                    prefix: i
+                    suffix: is
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: true
+                    pos: AUX
+                    tag: VBZ
+                    dep: ROOT
+                    lang: en
+                    prob: -20
+                    char_offset: 35
+                  - text: it
+                    text_with_ws: it
+                    whitespace: ''
+                    head: "'s"
+                    left_edge: it
+                    right_edge: it
+                    index: 8
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: "-PRON-"
+                    normalized: it
+                    shape: xx
+                    prefix: i
+                    suffix: it
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: true
+                    pos: PRON
+                    tag: PRP
+                    dep: nsubj
+                    lang: en
+                    prob: -20
+                    char_offset: 38
+                  - text: "'s"
+                    text_with_ws: "'s "
+                    whitespace: " "
+                    head: is
+                    left_edge: it
+                    right_edge: CEO
+                    index: 9
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: be
+                    normalized: "'s"
+                    shape: "'x"
+                    prefix: "'"
+                    suffix: "'s"
+                    is_alpha: false
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: true
+                    pos: AUX
+                    tag: VBZ
+                    dep: ccomp
+                    lang: en
+                    prob: -20
+                    char_offset: 40
+                  - text: CEO
+                    text_with_ws: CEO
+                    whitespace: ''
+                    head: "'s"
+                    left_edge: CEO
+                    right_edge: CEO
+                    index: 10
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: ceo
+                    normalized: ceo
+                    shape: XXX
+                    prefix: C
+                    suffix: CEO
+                    is_alpha: true
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: false
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: false
+                    pos: NOUN
+                    tag: NN
+                    dep: attr
+                    lang: en
+                    prob: -20
+                    char_offset: 43
+                  - text: "."
+                    text_with_ws: "."
+                    whitespace: ''
+                    head: is
+                    left_edge: "."
+                    right_edge: "."
+                    index: 11
+                    ent_type: ''
+                    ent_iob: O
+                    lemma: "."
+                    normalized: "."
+                    shape: "."
+                    prefix: "."
+                    suffix: "."
+                    is_alpha: false
+                    is_ascii: true
+                    is_digit: false
+                    is_title: false
+                    is_punct: true
+                    is_left_punct: false
+                    is_right_punct: false
+                    is_space: false
+                    is_bracket: false
+                    is_quote: false
+                    is_currency: false
+                    like_url: false
+                    like_num: false
+                    like_email: false
+                    is_oov: true
+                    is_stop: false
+                    pos: PUNCT
+                    tag: "."
+                    dep: punct
+                    lang: en
+                    prob: -20
+                    char_offset: 46
+          schema:
+            $ref: components.yaml#/components/schemas/PartsOfSpeech
+    '400':
+      description: The pretrained model lacks the `ner`, `parser`, or `tagger` pipeline components.
+      content:
+        application/json:
+          example:
+            detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support part-of-speech tagging.
+          schema:
+            $ref: components.yaml#/components/schemas/InvalidModel

@@ -1,0 +1,358 @@
+components:
+  schemas:
+    InvalidModel:
+      type: object
+      properties:
+        detail:
+          type: string
+      required: [detail]
+    Text:
+      type: object
+      properties:
+        text:
+          type: string
+      required: [text]
+    NERRequest:
+      type: object
+      properties:
+        sections:
+          description:
+            Although you could pass the full text as a single array item, it would be faster to split large text into
+            multiple items. Each item needn't be semantically related.
+          type: array
+          items:
+            type: string
+        sense2vec:
+          description: Whether to also compute similar phrases using sense2vec (significantly slower)
+          type: boolean
+          default: false
+      required: [sections]
+    NERResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              entities:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+                      description: A unicode representation of the entity text.
+                    label:
+                      description: |
+                        The named entity label. The model's label scheme lists which are supported. An explanation of
+                        the different labels can be found [here](https://spacy.io/api/annotation#named-entities).
+                      type: string
+                    start_char:
+                      type: integer
+                      description: The character offset for the start of the entity.
+                    end_char:
+                      type: integer
+                      description: The character offset for the end of the entity.
+                    lemma:
+                      type: string
+                      description: The entity’s lemma.
+                    sense2vec:
+                      type: array
+                      description: Phrases similar to the entity (empty if sense2vec was disabled)
+                      items:
+                        type: object
+                        properties:
+                          phrase:
+                            type: string
+                          similarity:
+                            type: number
+                            description: Similarity in the range of 0-1
+                        required: [phrase, similarity]
+                    start:
+                      type: integer
+                      description: The token offset for the start of the entity.
+                    end:
+                      type: integer
+                      description: The token offset for the end of the entity.
+                    text_with_ws:
+                      type: string
+                      description:
+                        The text content of the entity with a trailing whitespace character if the last token
+                        has one.
+                  required: [start, end, text, text_with_ws, start_char, end_char, lemma, sense2vec, label]
+              text:
+                type: string
+            required: [entities, text]
+      required: [data]
+    SentenceWithPhrase:
+      type: object
+      properties:
+        sentence:
+          type: string
+          description: The sentence containing the phrase.
+        phrase:
+          type: string
+          description: sense2vec will be run only on this phrase.
+      required: [sentence, phrase]
+    Sense2vecPhrases:
+      type: object
+      properties:
+        sense2vec:
+          type: array
+          description: Phrases similar to the entity
+          items:
+            type: object
+            properties:
+              phrase:
+                type: string
+              similarity:
+                type: number
+                description: Similarity in the range of 0-1
+            required: [phrase, similarity]
+      required: [sense2vec]
+    PartsOfSpeech:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+                description: The sentence or phrase being tagged.
+              tags:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    char_offset:
+                      type: integer
+                      description: The character offset of the token within the parent document.
+                    dep:
+                      type: string
+                      description: The dependency label. The model's label scheme lists which are supported. An
+                        explanation of the different labels can be found
+                        [here](https://spacy.io/api/annotation#dependency-parsing).
+                    ent_iob:
+                      type: string
+                      enum: [B, I, O, '']
+                      description:
+                        IOB code of named entity tag. `“B”` means the token begins an entity, `“I”` means it is
+                        inside an entity, `“O”` means it is outside an entity, and `""` means no entity tag is set.
+                    ent_type:
+                      type: string
+                      description: |
+                        The named entity label. The model's label scheme lists which are supported. An explanation of
+                        the different labels can be found [here](https://spacy.io/api/annotation#named-entities).
+                    head:
+                      type: string
+                      description: The syntactic parent, or “governor”, of this token.
+                    index:
+                      type: integer
+                      description: The index of the token within the parent document.
+                    is_alpha:
+                      type: boolean
+                      description: Does the token consist of alphabetic characters?
+                    is_ascii:
+                      type: boolean
+                      description: Does the token consist of ASCII characters?
+                    is_bracket:
+                      type: boolean
+                      description: Is the token a bracket?
+                    is_currency:
+                      type: boolean
+                      description: Is the token a currency symbol?
+                    is_digit:
+                      type: boolean
+                      description: Does the token consist of digits?
+                    is_left_punct:
+                      type: boolean
+                      description: Is the token a left punctuation mark (e.g. `(`)?
+                    is_oov:
+                      type: boolean
+                      description: Is the token out-of-vocabulary?
+                    is_punct:
+                      type: boolean
+                      description: Is the token punctuation?
+                    is_quote:
+                      type: boolean
+                      description: Is the token a quotation mark?
+                    is_right_punct:
+                      type: boolean
+                      description: Is the token a right punctuation mark (e.g. `)`)?
+                    is_space:
+                      type: boolean
+                      description: Does the token consist of whitespace characters?
+                    is_stop:
+                      type: boolean
+                      description: Is the token part of a “stop list”?
+                    is_title:
+                      type: boolean
+                      description: Is the token in titlecase?
+                    lang:
+                      type: string
+                      enum:
+                        - af
+                        - ar
+                        - bg
+                        - bn
+                        - ca
+                        - cs
+                        - da
+                        - de
+                        - el
+                        - en
+                        - es
+                        - et
+                        - fa
+                        - fi
+                        - fr
+                        - ga
+                        - he
+                        - hi
+                        - hr
+                        - hu
+                        - id
+                        - is
+                        - it
+                        - ja
+                        - kn
+                        - ko
+                        - lt
+                        - lv
+                        - mr
+                        - nb
+                        - nl
+                        - pl
+                        - pt
+                        - ro
+                        - ru
+                        - si
+                        - sk
+                        - sl
+                        - sq
+                        - sr
+                        - sv
+                        - ta
+                        - te
+                        - th
+                        - tl
+                        - tr
+                        - tt
+                        - uk
+                        - ur
+                        - vi
+                        - xx
+                        - zh
+                      description:
+                        The [ISO 639-1 code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) for the
+                        language of the parent document’s vocabulary.
+                    left_edge:
+                      type: string
+                      description: The leftmost token of this token’s syntactic descendants.
+                    lemma:
+                      type: string
+                      description: Base form of the token, with no inflectional suffixes.
+                    like_email:
+                      type: boolean
+                      description: Does the token resemble an email address?
+                    like_num:
+                      type: boolean
+                      description: Does the token represent a number (e.g. `10.9`, `10`, `"ten"`)?
+                    like_url:
+                      type: boolean
+                      description: Does the token resemble a URL?
+                    normalized:
+                      type: string
+                      description: The token’s norm (i.e., a normalized form of the token text).
+                    pos:
+                      type: string
+                      description: Part-of-speech tags for the model
+                    prefix:
+                      type: string
+                      description: A length-N substring from the start of the token. Defaults to `N=1`.
+                    prob:
+                      type: number
+                      description:
+                        Smoothed log probability estimate of token’s word type (context-independent entry in
+                        the vocabulary).
+                    right_edge:
+                      type: string
+                      description: The rightmost token of this token’s syntactic descendants.
+                    shape:
+                      type: string
+                      description: Transform of the tokens’s string, to show orthographic features (e.g., `“Xxxx”` or
+                        `“dd”`).
+                    suffix:
+                      type: string
+                      description: Length-N substring from the end of the token. Defaults to `N=3`.
+                    tag:
+                      type: string
+                      description: Part-of-speech tags from the model's label scheme
+                    text:
+                      type: string
+                      description: Verbatim text content.
+                    text_with_ws:
+                      type: string
+                      description: Text content, with trailing space character if present.
+                    whitespace:
+                      type: string
+                      enum:  [' ', '']
+                      description: Trailing space character if present.
+                  required:
+                    - text
+                    - text_with_ws
+                    - whitespace
+                    - head
+                    - left_edge
+                    - right_edge
+                    - index
+                    - ent_type
+                    - ent_iob
+                    - lemma
+                    - normalized
+                    - shape
+                    - prefix
+                    - suffix
+                    - is_alpha
+                    - is_ascii
+                    - is_digit
+                    - is_title
+                    - is_punct
+                    - is_left_punct
+                    - is_right_punct
+                    - is_space
+                    - is_bracket
+                    - is_quote
+                    - is_currency
+                    - like_url
+                    - like_num
+                    - like_email
+                    - is_oov
+                    - is_stop
+                    - pos
+                    - tag
+                    - dep
+                    - lang
+                    - prob
+                    - char_offset
+            required: [text, tags]
+      required: [data]
+    Tokens:
+      type: object
+      properties:
+        tokens:
+          type: array
+          items:
+            type: string
+      required: [tokens]
+    Sentences:
+      type: object
+      properties:
+        sentences:
+          type: array
+          items:
+            type: string
+      required: [sentences]

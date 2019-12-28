@@ -1,0 +1,7 @@
+get:
+  tags: [status]
+  description: Check if all systems are operational
+  operationId: healthCheck
+  responses:
+    '204':
+      description: All systems are operational
