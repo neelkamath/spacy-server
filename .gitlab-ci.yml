@@ -30,12 +30,12 @@ test-server:
 test-spec:
   stage: test
   image: node
-  script: npx @stoplight/spectral lint docs/openapi.yaml
+  script: npx @stoplight/spectral lint docs/spec/openapi.yaml
 
 build-docs:
   stage: build
   image: node
-  script: npx redoc-cli bundle docs/openapi.yaml --title 'spaCy Server'
+  script: npx redoc-cli bundle docs/spec/openapi.yaml --title 'spaCy Server'
   artifacts:
     paths: [redoc-static.html]
   only: [master]

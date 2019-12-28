@@ -16,7 +16,7 @@ deploy () {
 }
 
 # Get the HTTP API version.
-version=$(grep version docs/openapi.yaml -m 1)
+version=$(grep version docs/spec/openapi.yaml -m 1)
 version=${version#*: }
 version=$(echo "$version" | cut -d "'" -f 2)
 

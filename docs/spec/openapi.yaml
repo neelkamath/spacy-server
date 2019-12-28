@@ -1,0 +1,37 @@
+openapi: 3.0.2
+info:
+  title: spaCy Server
+  version: '2'
+  description: |
+    Industrial-strength NLP via [spaCy](https://spacy.io) and [sense2vec](https://github.com/explosion/sense2vec). No
+    knowledge of spaCy or sense2vec is required to use this service.
+
+    You can use any spaCy-compatible model with this service. Different models offer different labels. In certain parts
+    of the docs, you will be asked to refer to your choice of model's "label scheme". The label scheme can be found at
+    https://spacy.io/models (e.g., https://spacy.io/models/en#en_core_web_sm-labels is the label scheme for the
+    `en_core_web_sm` model).
+
+    You can view the documentation for previous versions [here](https://github.com/neelkamath/spacy-server/releases).
+  contact:
+    name: Neel Kamath
+    email: neelkamathonline@gmail.com
+    url: https://github.com/neelkamath/spacy-server
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:8000
+    description: You'll have to [run the server](https://github.com/neelkamath/spacy-server#installation) yourself.
+paths:
+  /ner:
+    $ref: ner.yaml
+  /sense2vec:
+    $ref: sense2vec.yaml
+  /pos:
+    $ref: pos.yaml
+  /tokenizer:
+    $ref: tokenizer.yaml
+  /sentencizer:
+    $ref: sentencizer.yaml
+  /health_check:
+    $ref: health_check.yaml

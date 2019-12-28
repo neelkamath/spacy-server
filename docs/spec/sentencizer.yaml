@@ -1,0 +1,31 @@
+post:
+  tags: [nlp]
+  description: Sentence segmentation. The pretrained model must have the `parser` pipeline component for this
+    endpoint to be available.
+  operationId: sentencizer
+  requestBody:
+    required: true
+    description: Sentences to segmentize
+    content:
+      application/json:
+        example:
+          text: Apple is looking at buying U.K. startup for $1 billion. Another sentence.
+        schema:
+          $ref: components.yaml#/components/schemas/Text
+  responses:
+    '200':
+      description: Sentences
+      content:
+        application/json:
+          example:
+            sentences: [Apple is looking at buying U.K. startup for $1 billion., Another sentence.]
+          schema:
+            $ref: components.yaml#/components/schemas/Sentences
+    '400':
+      description: The pretrained model lacks the `parser` pipeline component.
+      content:
+        application/json:
+          example:
+            detail: The pretrained model (en_trf_bertbaseuncased_lg) doesn't support sentence segmentation.
+          schema:
+            $ref: components.yaml#/components/schemas/InvalidModel
