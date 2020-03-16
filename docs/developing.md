@@ -7,20 +7,28 @@ Replace `<MODEL>` with the name of the [spaCy model](https://spacy.io/models) (e
 ### Development
 
 ```
-SPACY_MODEL=<MODEL> SENSE2VEC=<ENABLED> docker-compose -p dev --project-directory . \
-    -f docker/docker-compose.yml -f docker/docker-compose.override.yml up --build
+SPACY_MODEL=<MODEL> SENSE2VEC=<ENABLED> docker-compose \
+    -p dev \
+    --project-directory . \
+    -f docker/docker-compose.yml \
+    -f docker/docker-compose.override.yml \
+    up --build
 ```
-
 The server will be running on `http://localhost:8000`, and has automatic reload enabled.
 
 ### Testing
 
-```
-docker-compose -p test --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml \
-    run --service-ports app sh -c '. scripts/setup.sh && bash'
-   ```
-
-Changes to the source code will automatically be mirrored in the container. A bind mount connects the project directory and the container so that you can run commands like `pytest`.
+1. Start the container. A bind mount connects the project directory and the container so that changes to the source code will automatically be mirrored in the container.
+    ```
+    docker-compose \
+        -p test \
+        --project-directory . \
+        -f docker/docker-compose.yml \
+        -f docker/docker-compose.test.yml \
+        run --service-ports app sh -c '. scripts/setup.sh && bash'
+    ```
+1. Test whenever you want by running `pytest`.
+1. Exit the container once you're done: `exit`
 
 ### Production
 

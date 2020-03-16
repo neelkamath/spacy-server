@@ -159,6 +159,7 @@ class Token:
     text_with_ws: str
     whitespace: str
     head: str
+    head_index: int
     left_edge: str
     right_edge: str
     index: int
@@ -236,6 +237,7 @@ def build_token_with_sent(token) -> TokenWithSentence:
             text_with_ws=token.text_with_ws,
             whitespace=token.whitespace_,
             head=token.head.text,
+            head_index=token.head.i,
             left_edge=token.left_edge.text,
             right_edge=token.right_edge.text,
             index=token.i,
