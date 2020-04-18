@@ -12,7 +12,7 @@ Install [Docker](https://hub.docker.com/search/?type=edition&offering=community)
 
 ### Generating an SDK
 
-You can generate a wrapper for the HTTP API using [OpenAPI Generator](https://openapi-generator.tech/) on the file [`https://raw.githubusercontent.com/neelkamath/spacy-server/master/docs/spec/openapi.yaml`](https://raw.githubusercontent.com/neelkamath/spacy-server/master/docs/openapi.yaml).
+You can generate a wrapper for the HTTP API using [OpenAPI Generator](https://openapi-generator.tech/) on the file [`https://raw.githubusercontent.com/neelkamath/spacy-server/master/docs/spec/openapi.yaml`](https://raw.githubusercontent.com/neelkamath/spacy-server/master/docs/spec/openapi.yaml).
 
 ## [Usage](https://hub.docker.com/r/neelkamath/spacy-server)
 
