@@ -3,13 +3,14 @@
 import os
 import typing
 
-import dataclasses
 import fastapi
 import pydantic
 import sense2vec
 import spacy
 import starlette.responses
 import starlette.status
+
+from dataclasses import dataclass
 
 app: fastapi.FastAPI = fastapi.FastAPI()
 model: str = os.getenv('SPACY_MODEL')
@@ -36,7 +37,7 @@ class NERRequest(pydantic.BaseModel):
     sense2vec: bool = False
 
 
-@dataclasses.dataclass
+@dataclass
 class BuiltEntity:
     text: str
     label: str
@@ -49,13 +50,13 @@ class BuiltEntity:
     sense2vec: typing.List[str]
 
 
-@dataclasses.dataclass
+@dataclass
 class SentenceWithEntities:
     text: str
     entities: typing.List[BuiltEntity]
 
 
-@dataclasses.dataclass
+@dataclass
 class NERResponse:
     data: typing.List[SentenceWithEntities]
 
@@ -133,7 +134,7 @@ class PhraseInSentence(pydantic.BaseModel):
         return values
 
 
-@dataclasses.dataclass
+@dataclass
 class Sense2vecResponse:
     sense2vec: typing.List[SimilarPhrase]
 
@@ -153,7 +154,7 @@ class TextModel(pydantic.BaseModel):
     text: str
 
 
-@dataclasses.dataclass
+@dataclass
 class Token:
     text: str
     text_with_ws: str
@@ -194,18 +195,18 @@ class Token:
     char_offset: int
 
 
-@dataclasses.dataclass
+@dataclass
 class TaggedText:
     text: str
     tags: typing.List[Token]
 
 
-@dataclasses.dataclass
+@dataclass
 class POSResponse:
     data: typing.List[TaggedText]
 
 
-@dataclasses.dataclass
+@dataclass
 class TokenWithSentence:
     token: Token
     sent: str
@@ -274,7 +275,7 @@ def build_token_with_sent(token) -> TokenWithSentence:
     )
 
 
-@dataclasses.dataclass
+@dataclass
 class TokenizerResponse:
     tokens: typing.List[str]
 
@@ -288,7 +289,7 @@ async def tokenize(request: TextModel) -> TokenizerResponse:
     return TokenizerResponse([token.text for token in doc])
 
 
-@dataclasses.dataclass
+@dataclass
 class SentencizerResponse:
     sentences: typing.List[str]
 
