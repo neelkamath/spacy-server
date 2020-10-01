@@ -1,42 +1,42 @@
 """Provides NLP via spaCy and sense2vec over an HTTP API."""
 
 import os
-import typing
+from typing import List
 
-import dataclasses
-import fastapi
-import pydantic
-import sense2vec
 import spacy
-import starlette.responses
-import starlette.status
+from dataclasses import dataclass
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, root_validator
+from sense2vec import Sense2VecComponent
+from starlette.responses import Response
+from starlette.status import HTTP_204_NO_CONTENT
 
-app: fastapi.FastAPI = fastapi.FastAPI()
+app: FastAPI = FastAPI()
 model: str = os.getenv('SPACY_MODEL')
 pipeline_error: str = f"The model ({model}) doesn't support " + '{}.'
 nlp: spacy = spacy.load(model)
 if os.getenv('SENSE2VEC') == '1':
     nlp.add_pipe(
-        sense2vec.Sense2VecComponent(nlp.vocab).from_disk('src/s2v_old')
+        Sense2VecComponent(nlp.vocab).from_disk('src/s2v_old')
     )
 
 
-def enforce_components(components: typing.List[str], message: str) -> None:
+def enforce_components(components: List[str], message: str) -> None:
     """Throws the <message> if the model doesn't have the <components>."""
     for component in components:
         if not nlp.has_pipe(component):
-            raise fastapi.HTTPException(
+            raise HTTPException(
                 status_code=400,
                 detail=pipeline_error.format(message)
             )
 
 
-class NERRequest(pydantic.BaseModel):
-    sections: typing.List[str]
+class NERRequest(BaseModel):
+    sections: List[str]
     sense2vec: bool = False
 
 
-@dataclasses.dataclass
+@dataclass
 class BuiltEntity:
     text: str
     label: str
@@ -46,18 +46,18 @@ class BuiltEntity:
     start: int
     end: int
     text_with_ws: str
-    sense2vec: typing.List[str]
+    sense2vec: List[str]
 
 
-@dataclasses.dataclass
+@dataclass
 class SentenceWithEntities:
     text: str
-    entities: typing.List[BuiltEntity]
+    entities: List[BuiltEntity]
 
 
-@dataclasses.dataclass
+@dataclass
 class NERResponse:
-    data: typing.List[SentenceWithEntities]
+    data: List[SentenceWithEntities]
 
 
 @app.post('/ner')
@@ -71,7 +71,7 @@ async def recognize_named_entities(request: NERRequest) -> NERResponse:
     response: NERResponse = NERResponse([])
     for doc in nlp.pipe(request.sections, disable=['tagger']):
         for sent in doc.sents:
-            entities: typing.List[BuiltEntity] = [
+            entities: List[BuiltEntity] = [
                 build_entity(ent, request.sense2vec) for ent in sent.ents
             ]
             data: SentenceWithEntities = SentenceWithEntities(
@@ -82,7 +82,7 @@ async def recognize_named_entities(request: NERRequest) -> NERResponse:
     return response
 
 
-class SimilarPhrase(pydantic.BaseModel):
+class SimilarPhrase(BaseModel):
     """Similar phrases computed by sense2vec."""
 
     """The similar phrase."""
@@ -91,13 +91,13 @@ class SimilarPhrase(pydantic.BaseModel):
     similarity: float
 
 
-def compute_phrases(ent) -> typing.List[SimilarPhrase]:
+def compute_phrases(ent) -> List[SimilarPhrase]:
     """Computes similar phrases for the entity (<ent>).
 
     The entity must have already been processed by the ner, parser, and
     sense2vec pipeline components.
     """
-    similar: typing.List[SimilarPhrase] = []
+    similar: List[SimilarPhrase] = []
     if ent._.in_s2v:
         for data in ent._.s2v_most_similar():
             similar.append(
@@ -120,40 +120,40 @@ def build_entity(ent: spacy, use_sense2vec: bool) -> BuiltEntity:
     )
 
 
-class PhraseInSentence(pydantic.BaseModel):
+class PhraseInSentence(BaseModel):
     """A <phrase> in a <sentence>."""
 
     sentence: str
     phrase: str
 
-    @pydantic.root_validator
+    @root_validator
     def phrase_must_be_in_sentence(cls, values):
         if values.get('phrase') not in values.get('sentence'):
             raise ValueError('phrase must be in sentence')
         return values
 
 
-@dataclasses.dataclass
+@dataclass
 class Sense2vecResponse:
-    sense2vec: typing.List[SimilarPhrase]
+    sense2vec: List[SimilarPhrase]
 
 
 @app.post('/sense2vec')
 async def sense2vec(request: PhraseInSentence) -> Sense2vecResponse:
     enforce_components(['ner', 'parser', 'sense2vec'], 'sense2vec')
     doc: nlp = nlp(request.sentence, disable=['tagger'])
-    phrases: typing.List[SimilarPhrase] = []
+    phrases: List[SimilarPhrase] = []
     for ent in list(doc.sents)[0].ents:
         if ent.text == request.phrase:
-            phrases: typing.List[SimilarPhrase] = compute_phrases(ent)
+            phrases: List[SimilarPhrase] = compute_phrases(ent)
     return Sense2vecResponse(phrases)
 
 
-class TextModel(pydantic.BaseModel):
+class TextModel(BaseModel):
     text: str
 
 
-@dataclasses.dataclass
+@dataclass
 class Token:
     text: str
     text_with_ws: str
@@ -194,18 +194,18 @@ class Token:
     char_offset: int
 
 
-@dataclasses.dataclass
+@dataclass
 class TaggedText:
     text: str
-    tags: typing.List[Token]
+    tags: List[Token]
 
 
-@dataclasses.dataclass
+@dataclass
 class POSResponse:
-    data: typing.List[TaggedText]
+    data: List[TaggedText]
 
 
-@dataclasses.dataclass
+@dataclass
 class TokenWithSentence:
     token: Token
     sent: str
@@ -214,7 +214,7 @@ class TokenWithSentence:
 @app.post('/pos')
 async def tag_parts_of_speech(request: TextModel) -> POSResponse:
     enforce_components(['ner', 'parser', 'tagger'], 'part-of-speech tagging')
-    data: typing.List[TaggedText] = []
+    data: List[TaggedText] = []
     doc: nlp = nlp(request.text, disable=['sense2vec'])
     for token_with_sent in [build_token_with_sent(token) for token in doc]:
         if token_with_sent.sent in [obj.text for obj in data]:
@@ -274,9 +274,9 @@ def build_token_with_sent(token) -> TokenWithSentence:
     )
 
 
-@dataclasses.dataclass
+@dataclass
 class TokenizerResponse:
-    tokens: typing.List[str]
+    tokens: List[str]
 
 
 @app.post('/tokenizer')
@@ -288,9 +288,9 @@ async def tokenize(request: TextModel) -> TokenizerResponse:
     return TokenizerResponse([token.text for token in doc])
 
 
-@dataclasses.dataclass
+@dataclass
 class SentencizerResponse:
-    sentences: typing.List[str]
+    sentences: List[str]
 
 
 @app.post('/sentencizer')
@@ -301,7 +301,7 @@ async def sentencize(request: TextModel) -> SentencizerResponse:
 
 
 @app.get('/health_check')
-async def check_health() -> starlette.responses.Response:
-    return starlette.responses.Response(
-        status_code=starlette.status.HTTP_204_NO_CONTENT
+async def check_health() -> Response:
+    return Response(
+        status_code=HTTP_204_NO_CONTENT
     )
