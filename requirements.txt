@@ -2,7 +2,7 @@
 # and tests use hardcoded outputs, so the program may randomly fail to build if a dynamic version is used.
 sense2vec==2.0.0
 ujson==4.2.0
-fastapi==0.68.1
+fastapi==0.45.0
 uvicorn==0.15.0
 pytest==6.2.5
 requests==2.26.0

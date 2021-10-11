@@ -16,9 +16,8 @@ model: str = os.getenv('SPACY_MODEL')
 pipeline_error: str = f"The model ({model}) doesn't support " + '{}.'
 nlp: spacy = spacy.load(model)
 if os.getenv('SENSE2VEC') == '1':
-    nlp.add_pipe(
-        Sense2VecComponent(nlp.vocab).from_disk('src/s2v_old')
-    )
+    s2v = nlp.add_pipe("sense2vec")
+    s2v.from_disk("src/s2v_old")
 
 
 def enforce_components(components: List[str], message: str) -> None:
