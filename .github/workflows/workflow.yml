@@ -1,0 +1,65 @@
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  download-vectors:
+    runs-on: ubuntu-latest
+    steps:
+     - run: |
+        wget -q https://github.com/explosion/sense2vec/releases/download/v1.0.0/s2v_reddit_2015_md.tar.gz
+        tar -xzf s2v_reddit_2015_md.tar.gz -C src
+        rm s2v_reddit_2015_md.tar.gz
+    uses: actions/upload-artifact@v2
+    with:
+      path: src/s2v_old
+    
+  test-server:
+    runs-on: ubuntu-latest
+    needs: [download-vectors]
+    steps:
+      - run: |
+          docker-compose --project-directory . -f docker/docker-compose.yml -f docker/docker-compose.test.yml
+          run app sh -c '. scripts/setup.sh && pytest'
+
+  test-spec:
+    runs-on: ubuntu-latest
+    needs: [download-vectors]
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - run: npx @stoplight/spectral lint docs/spec/openapi.yaml
+
+  build-docs:
+    runs-on: ubuntu-latest
+    needs: [test-server,test-spec]
+    steps:
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - run: npx redoc-cli bundle docs/spec/openapi.yaml --title 'spaCy Server'
+    uses: actions/upload-artifact@v2
+    with:
+      path: redoc-static
+
+  docker-hub:
+    runs-on: ubuntu-latest
+    needs: [build-docs]
+    steps:
+      - run: sh scripts/deploy.sh
+    timeout-minutes: 120
+
+  pages:
+    runs-on: ubuntu-latest
+    needs: [build-docs]
+    steps:
+      - run: |
+          mkdir public
+          cp redoc-static.html public/index.html
+    uses: actions/upload-artifact@v2
+    with:
+      path: public
